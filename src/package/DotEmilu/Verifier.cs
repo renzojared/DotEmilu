@@ -1,6 +1,6 @@
 namespace DotEmilu;
 
-internal class Verifier<TRequest>(IEnumerable<IValidator<TRequest>> validators) : IVerifier<TRequest>
+internal sealed class Verifier<TRequest>(IEnumerable<IValidator<TRequest>> validators) : IVerifier<TRequest>
 {
     public List<ValidationFailure> Errors { get; private set; } = [];
 

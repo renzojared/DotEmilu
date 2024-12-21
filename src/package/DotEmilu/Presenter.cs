@@ -1,6 +1,6 @@
 namespace DotEmilu;
 
-internal class Presenter(IOptions<ResultMessage> options) : IPresenter
+internal sealed class Presenter(IOptions<ResultMessage> options) : IPresenter
 {
     public IResult Success<TResponse>(in TResponse response)
         => Results.Ok(response);
