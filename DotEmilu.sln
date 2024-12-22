@@ -8,6 +8,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotEmilu", "src\package\Dot
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotEmilu.EntityFrameworkCore", "src\package\DotEmilu.EntityFrameworkCore\DotEmilu.EntityFrameworkCore.csproj", "{B4467030-A646-46AA-91EA-037F6CE2ABDA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C161E320-D081-490B-AC34-BD66AF4165F3}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		README.md = README.md
+		LICENSE = LICENSE
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
