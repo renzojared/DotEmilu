@@ -17,6 +17,4 @@ internal sealed class Verifier<TRequest>(IEnumerable<IValidator<TRequest>> valid
                 .ToList();
         }
     }
-
-    public void AddErrors(in List<ValidationFailure> errors) => Errors.AddRange(errors);
 }
