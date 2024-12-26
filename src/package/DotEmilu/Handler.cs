@@ -14,21 +14,19 @@ public abstract class Handler<TRequest>(IVerifier<TRequest> verifier, IPresenter
         }
         catch (Exception e)
         {
-            await HandleExceptionAsync(ref e, cancellationToken);
+            await HandleExceptionAsync(ref e);
             return presenter.ServerError(e);
         }
         finally
         {
-            await FinalizeAsync(cancellationToken);
+            await FinalizeAsync();
         }
     }
 
     protected abstract Task<IResult> HandleUseCaseAsync(TRequest request,
         CancellationToken cancellationToken = default);
 
-    protected virtual Task HandleExceptionAsync(ref Exception e, CancellationToken cancellationToken = default)
-        => Task.CompletedTask;
+    protected virtual Task HandleExceptionAsync(ref Exception e) => Task.CompletedTask;
 
-    protected virtual Task FinalizeAsync(CancellationToken cancellationToken = default)
-        => Task.CompletedTask;
+    protected virtual Task FinalizeAsync() => Task.CompletedTask;
 }
