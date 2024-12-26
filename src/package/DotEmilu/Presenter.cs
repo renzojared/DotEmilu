@@ -2,9 +2,6 @@ namespace DotEmilu;
 
 internal sealed class Presenter(IOptions<ResultMessage> options) : IPresenter
 {
-    public IResult Success<TResponse>(in TResponse response)
-        => Results.Ok(response);
-
     public IResult ValidationError(in IEnumerable<ValidationFailure> validationFailures)
         => Results.ValidationProblem(
             errors: validationFailures.GroupBy(f => f.PropertyName, f => f.ErrorMessage)
