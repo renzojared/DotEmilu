@@ -1,0 +1,6 @@
+@DotEmilu.UseCaseTest_HostAddress = http://localhost:5026
+
+GET {{DotEmilu.UseCaseTest_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
