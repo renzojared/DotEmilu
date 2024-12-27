@@ -1,6 +1,6 @@
 namespace DotEmilu;
 
-internal sealed class Presenter(IOptions<ResultMessage> options) : IPresenter
+internal sealed class Presenter(IOptions<ResultMessage> options, IHostEnvironment environment) : IPresenter
 {
     public IResult ValidationError(in IEnumerable<ValidationFailure> validationFailures)
         => Results.ValidationProblem(
@@ -13,10 +13,17 @@ internal sealed class Presenter(IOptions<ResultMessage> options) : IPresenter
             type: options.Value.ValidationError.Type ?? "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.1");
 
     public IResult ServerError(in Exception exception)
-        => Results.Problem(
-            detail: options.Value.ServerError.Detail,
+    {
+        var additionalDetails = environment.IsDevelopment()
+            ? $"{exception.InnerException?.Message ?? exception.Message}: {exception.StackTrace}"
+            : string.Empty;
+
+        return Results.Problem(
+            detail: string.Join(" | ", new[] { options.Value.ServerError.Detail, additionalDetails }
+                .Where(s => !string.IsNullOrEmpty(s))),
             instance: $"{nameof(ProblemDetails)}/{exception.GetType().Name}",
             statusCode: StatusCodes.Status500InternalServerError,
             title: options.Value.ServerError.Title,
             type: options.Value.ServerError.Type ?? "https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1");
+    }
 }
