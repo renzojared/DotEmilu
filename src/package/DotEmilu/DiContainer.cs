@@ -6,12 +6,20 @@ namespace DotEmilu;
 
 public static class DiContainer
 {
-    public static IServiceCollection AddDotEmilu(this IServiceCollection services, IConfiguration configuration)
-        => services
-            .Configure<ResultMessage>(message =>
-                configuration.GetRequiredSection(ResultMessage.SectionKey).Bind(message))
+    public static IServiceCollection AddDotEmilu(this IServiceCollection services)
+    {
+        services
+            .AddOptions<ResultMessage>()
+            .BindConfiguration(ResultMessage.SectionKey)
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+
+        services
             .AddScoped(typeof(IVerifier<>), typeof(Verifier<>))
             .AddScoped<IPresenter, Presenter>();
+
+        return services;
+    }
 
     public static IServiceCollection AddChainHandlers(this IServiceCollection services, Assembly assembly)
     {

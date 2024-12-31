@@ -1,6 +1,6 @@
 namespace DotEmilu;
 
-internal sealed class Presenter(IOptions<ResultMessage> options, IHostEnvironment environment) : IPresenter
+internal sealed class Presenter(IOptionsSnapshot<ResultMessage> options, IHostEnvironment environment) : IPresenter
 {
     public IResult ValidationError(in IEnumerable<ValidationFailure> validationFailures)
         => Results.ValidationProblem(

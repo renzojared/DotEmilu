@@ -1,5 +1,6 @@
 // Global using directives
 
+global using System.ComponentModel.DataAnnotations;
 global using FluentValidation;
 global using FluentValidation.Results;
 global using Microsoft.AspNetCore.Http;
