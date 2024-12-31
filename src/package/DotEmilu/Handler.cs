@@ -36,15 +36,28 @@ public abstract class Handler<TRequest, TResponse>(IVerifier<TRequest> verifier,
 {
     private readonly IVerifierError _verifier = verifier;
     private readonly IPresenter _presenter = presenter;
+    private IResult? Result { get; set; }
 
     protected sealed override async Task<IResult> HandleUseCaseAsync(TRequest request,
         CancellationToken cancellationToken = default)
     {
         var response = await HandleResponseAsync(request, cancellationToken);
 
-        return !_verifier.IsValid ? _presenter.ValidationError(_verifier.Errors) : _presenter.Success(response);
+        if (!_verifier.IsValid) return _presenter.ValidationError(_verifier.Errors);
+
+        if (Result is not null) return Result;
+
+        ArgumentNullException.ThrowIfNull(response);
+
+        return _presenter.Success(response);
     }
 
     protected abstract Task<TResponse?> HandleResponseAsync(TRequest request,
         CancellationToken cancellationToken = default);
+
+    protected TResponse? ResultIn(IResult result)
+    {
+        Result = result;
+        return default;
+    }
 }
