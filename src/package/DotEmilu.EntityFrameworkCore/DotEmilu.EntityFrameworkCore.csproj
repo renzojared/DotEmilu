@@ -5,10 +5,31 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Version>1.0.0</Version>
+        <Title>DotEmilu EF Core</Title>
+        <Authors>renzojared</Authors>
+        <Description>Simple .NET library to work with ef core</Description>
+        <Copyright>Copyright © DotEmilu</Copyright>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageIcon>icon.jpg</PackageIcon>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageTags>interceptor;entity;auditable;entity-framework-core;renzojared</PackageTags>
+        <PackageDescription>Simple .NET library to work with ef core</PackageDescription>
+        <PackageReleaseNotes>
+            Initial release with support for EF Core interceptors, auditable entities (create, update, delete tracking).
+        </PackageReleaseNotes>
+        <RepositoryUrl>https://github.com/renzojared/DotEmilu</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.11" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="..\..\..\assets\icon.jpg" Pack="true" Visible="false" PackagePath="/" />
+      <None Include="README.md" Pack="true" Visible="false" PackagePath="/" />
     </ItemGroup>
 
 </Project>
