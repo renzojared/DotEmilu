@@ -26,6 +26,6 @@ public static class SampleEndpoint
 
     private static async Task<IResult> Sample([FromBody] SampleRequest request,
         IHandler<SampleRequest> handler,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken)
         => await handler.HandleAsync(request, cancellationToken);
 }

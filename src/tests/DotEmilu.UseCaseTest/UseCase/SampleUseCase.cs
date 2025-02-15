@@ -7,7 +7,7 @@ public class SampleUseCase(IVerifier<SampleRequest> verifier, IPresenter present
     private readonly IVerifier<SampleRequest> _verifier = verifier;
 
     protected override async Task<SampleResponse?> HandleResponseAsync(SampleRequest request,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken)
     {
         var result = await SomeMethod(request, cancellationToken);
 
@@ -26,7 +26,7 @@ public class SampleUseCase(IVerifier<SampleRequest> verifier, IPresenter present
         return new SampleResponse(result);
     }
 
-    private async Task<string> SomeMethod(SampleRequest request, CancellationToken cancellationToken = default)
+    private async Task<string> SomeMethod(SampleRequest request, CancellationToken cancellationToken)
     {
         await Task.Delay(3000, cancellationToken);
         var message = $"El día {request.Date.ToShortDateString()} se hizo un cargo de {request.Amount}";
