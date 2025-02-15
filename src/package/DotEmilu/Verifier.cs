@@ -4,7 +4,7 @@ internal sealed class Verifier<TRequest>(IEnumerable<IValidator<TRequest>> valid
 {
     public List<ValidationFailure> Errors { get; private set; } = [];
 
-    public async Task ValidateAsync(TRequest request, CancellationToken cancellationToken = default)
+    public async Task ValidateAsync(TRequest request, CancellationToken cancellationToken)
     {
         if (validators.Any())
         {

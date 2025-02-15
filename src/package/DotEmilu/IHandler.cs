@@ -2,10 +2,10 @@ namespace DotEmilu;
 
 public interface IHandler<in TRequest>
 {
-    Task<IResult> HandleAsync(TRequest request, CancellationToken cancellationToken = default);
+    Task<IResult> HandleAsync(TRequest request, CancellationToken cancellationToken);
 }
 
 public interface IHandler
 {
-    Task HandleAsync(CancellationToken cancellationToken = default);
+    Task HandleAsync(CancellationToken cancellationToken);
 }
