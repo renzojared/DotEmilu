@@ -6,7 +6,7 @@
         <Nullable>enable</Nullable>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>1.0.2</Version>
+        <Version>1.0.3</Version>
         <Title>DotEmilu</Title>
         <Authors>renzojared</Authors>
         <Description>Simple .NET library to handle http requests</Description>
@@ -17,7 +17,7 @@
         <PackageTags>webapi;handler;request;http;renzojared</PackageTags>
         <PackageDescription>Simple .NET library to handle http requests</PackageDescription>
         <PackageReleaseNotes>
-            Updated Microsoft.AspNetCore.OpenApi to version 8.0.13 for stability and performance improvements.
+            Removed the default cancellation token to improve asynchronous request handling.
         </PackageReleaseNotes>
         <RepositoryUrl>https://github.com/renzojared/DotEmilu</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
