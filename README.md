@@ -24,7 +24,7 @@ Follow these simple steps to get started:
         private readonly IVerifier<SampleRequest> _verifier = verifier;
     
         protected override async Task<SampleResponse?> HandleResponseAsync(SampleRequest request,
-            CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken)
         {
             var result = await SomeMethod(request, cancellationToken);
     
@@ -47,7 +47,7 @@ Follow these simple steps to get started:
             return new SampleResponse(result);
         }
     
-        private async Task<string> SomeMethod(SampleRequest request, CancellationToken cancellationToken = default)
+        private async Task<string> SomeMethod(SampleRequest request, CancellationToken cancellationToken)
         {
             // Some logic
         }

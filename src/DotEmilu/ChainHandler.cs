@@ -7,5 +7,5 @@ public abstract class ChainHandler<TChain>
     public ChainHandler<TChain> SetSuccessor(ChainHandler<TChain> successor)
         => Successor = successor;
 
-    public abstract Task ContinueAsync(TChain chain, CancellationToken cancellationToken = default);
+    public abstract Task ContinueAsync(TChain chain, CancellationToken cancellationToken);
 }

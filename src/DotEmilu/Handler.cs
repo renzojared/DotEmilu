@@ -1,8 +1,9 @@
 namespace DotEmilu;
 
-public abstract class Handler<TRequest>(IVerifier<TRequest> verifier, IPresenter presenter) : IHandler<TRequest>
+public abstract class Handler<TRequest>(IVerifier<TRequest> verifier, IPresenter presenter)
+    : IHandler<TRequest>
 {
-    public async Task<IResult> HandleAsync(TRequest request, CancellationToken cancellationToken = default)
+    public async Task<IResult> HandleAsync(TRequest request, CancellationToken cancellationToken)
     {
         try
         {
@@ -23,11 +24,8 @@ public abstract class Handler<TRequest>(IVerifier<TRequest> verifier, IPresenter
         }
     }
 
-    protected abstract Task<IResult> HandleUseCaseAsync(TRequest request,
-        CancellationToken cancellationToken = default);
-
+    protected abstract Task<IResult> HandleUseCaseAsync(TRequest request, CancellationToken cancellationToken);
     protected virtual Task HandleExceptionAsync(ref Exception e) => Task.CompletedTask;
-
     protected virtual Task FinalizeAsync() => Task.CompletedTask;
 }
 
@@ -39,7 +37,7 @@ public abstract class Handler<TRequest, TResponse>(IVerifier<TRequest> verifier,
     private IResult? Result { get; set; }
 
     protected sealed override async Task<IResult> HandleUseCaseAsync(TRequest request,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken)
     {
         var response = await HandleResponseAsync(request, cancellationToken);
 
@@ -52,8 +50,7 @@ public abstract class Handler<TRequest, TResponse>(IVerifier<TRequest> verifier,
         return _presenter.Success(response);
     }
 
-    protected abstract Task<TResponse?> HandleResponseAsync(TRequest request,
-        CancellationToken cancellationToken = default);
+    protected abstract Task<TResponse?> HandleResponseAsync(TRequest request, CancellationToken cancellationToken);
 
     protected TResponse? ResultIn(IResult result)
     {
