@@ -6,7 +6,7 @@
         <Nullable>enable</Nullable>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>1.0.1</Version>
+        <Version>1.0.2</Version>
         <Title>DotEmilu EF Core</Title>
         <Authors>renzojared</Authors>
         <Description>Simple .NET library to work with ef core</Description>
@@ -17,14 +17,14 @@
         <PackageTags>interceptor;entity;auditable;entity-framework-core;renzojared</PackageTags>
         <PackageDescription>Simple .NET library to work with ef core</PackageDescription>
         <PackageReleaseNotes>
-            Updated Microsoft.EntityFrameworkCore to version 8.0.12 for the latest improvements and bug fixes.
+            Updated Microsoft.EntityFrameworkCore to version 8.0.13 for the latest improvements and bug fixes.
         </PackageReleaseNotes>
         <RepositoryUrl>https://github.com/renzojared/DotEmilu</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.12" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.13" />
     </ItemGroup>
 
     <ItemGroup>
