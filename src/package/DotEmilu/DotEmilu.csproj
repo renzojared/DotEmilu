@@ -6,7 +6,7 @@
         <Nullable>enable</Nullable>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>1.0.1</Version>
+        <Version>1.0.2</Version>
         <Title>DotEmilu</Title>
         <Authors>renzojared</Authors>
         <Description>Simple .NET library to handle http requests</Description>
@@ -17,7 +17,7 @@
         <PackageTags>webapi;handler;request;http;renzojared</PackageTags>
         <PackageDescription>Simple .NET library to handle http requests</PackageDescription>
         <PackageReleaseNotes>
-            Updated Microsoft.AspNetCore.OpenApi to version 8.0.12 for stability and performance improvements.
+            Updated Microsoft.AspNetCore.OpenApi to version 8.0.13 for stability and performance improvements.
         </PackageReleaseNotes>
         <RepositoryUrl>https://github.com/renzojared/DotEmilu</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
@@ -25,7 +25,7 @@
 
     <ItemGroup>
       <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
-      <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.12" />
+      <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.13" />
     </ItemGroup>
 
     <ItemGroup>
