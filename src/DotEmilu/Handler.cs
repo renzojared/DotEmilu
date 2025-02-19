@@ -1,7 +1,7 @@
 namespace DotEmilu;
 
-public abstract class Handler<TRequest>(IVerifier<TRequest> verifier, IPresenter presenter)
-    : IHandler<TRequest>
+public abstract class Handler<TRequest>(IVerifier<TRequest> verifier, IPresenter presenter) : IHandler<TRequest>
+    where TRequest : IBaseRequest
 {
     public async Task<IResult> HandleAsync(TRequest request, CancellationToken cancellationToken)
     {
@@ -31,8 +31,9 @@ public abstract class Handler<TRequest>(IVerifier<TRequest> verifier, IPresenter
 
 public abstract class Handler<TRequest, TResponse>(IVerifier<TRequest> verifier, IPresenter presenter)
     : Handler<TRequest>(verifier, presenter)
+    where TRequest : IBaseRequest
 {
-    private readonly IVerifierError _verifier = verifier;
+    private readonly IVerifier _verifier = verifier;
     private readonly IPresenter _presenter = presenter;
     private IResult? Result { get; set; }
 
