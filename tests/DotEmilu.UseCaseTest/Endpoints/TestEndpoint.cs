@@ -19,6 +19,7 @@ public static class MapEndpoint
         builder.MapPost("in-case", InCase);
         builder.MapPost("in-out-case", InOutCase);
         builder.MapPost("in-handler-case", InHandlerCase);
+        builder.MapPost("in-out-handler-case", InOutHandlerCase);
 
         return builder;
     }
@@ -48,4 +49,9 @@ public static class MapEndpoint
         HttpHandler<InHandlerDto> handler,
         CancellationToken cancellationToken)
         => await handler.HandleAsync(dto, cancellationToken, Results.NoContent);
+
+    private static async Task<IResult> InOutHandlerCase([FromBody] InOutHandlerDto dto,
+        HttpHandler<InOutHandlerDto, InOutHandlerDtoResponse> handler,
+        CancellationToken cancellationToken)
+        => await handler.HandleAsync(dto, cancellationToken);
 }
