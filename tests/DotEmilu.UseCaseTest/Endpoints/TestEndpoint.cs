@@ -17,6 +17,7 @@ public static class MapEndpoint
     public static RouteGroupBuilder MapGroups(this RouteGroupBuilder builder)
     {
         builder.MapPost("in-case", InCase);
+        builder.MapPost("in-out-case", InOutCase);
 
         return builder;
     }
@@ -28,5 +29,17 @@ public static class MapEndpoint
     {
         await handler.HandleAsync(dto, cancellationToken);
         return Results.Ok(verifier.Errors);
+    }
+
+    private static async Task<IResult> InOutCase([FromBody] InOutDto dto,
+        IHandler<InOutDto, InOutDtoResponse> handler,
+        IVerifier<InOutDto> verifier,
+        CancellationToken cancellationToken)
+    {
+        var response = await handler.HandleAsync(dto, cancellationToken);
+        if (!verifier.IsValid)
+            return Results.BadRequest(verifier.Errors);
+
+        return Results.Ok(response);
     }
 }
