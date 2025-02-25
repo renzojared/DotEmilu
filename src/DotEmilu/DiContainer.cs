@@ -14,11 +14,11 @@ public static class DiContainer
             .ValidateDataAnnotations()
             .ValidateOnStart();
 
-        services
+        return services
             .AddScoped(typeof(IVerifier<>), typeof(Verifier<>))
-            .AddScoped<IPresenter, Presenter>();
-
-        return services;
+            .AddScoped<IPresenter, Presenter>()
+            .AddScoped(typeof(HttpHandler<>))
+            .AddScoped(typeof(HttpHandler<,>));
     }
 
     public static IServiceCollection AddChainHandlers(this IServiceCollection services, Assembly assembly)

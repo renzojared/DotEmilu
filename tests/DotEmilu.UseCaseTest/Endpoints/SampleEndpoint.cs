@@ -25,7 +25,16 @@ public static class SampleEndpoint
     }
 
     private static async Task<IResult> Sample([FromBody] SampleRequest request,
-        IHandler<SampleRequest> handler,
+        HttpHandler<SampleRequest, SampleResponse> handler,
         CancellationToken cancellationToken)
-        => await handler.HandleAsync(request, cancellationToken);
+        => await handler.HandleAsync(request, cancellationToken, result =>
+        {
+            if (request.Date.Year == 2025)
+                return Results.Ok($"Congratulations! {result}");
+
+            if (request.Category >= 10)
+                return Results.Ok($"{result}. Account: {request.Account}. Category: {request.Category}");
+
+            return Results.Ok(result);
+        });
 }

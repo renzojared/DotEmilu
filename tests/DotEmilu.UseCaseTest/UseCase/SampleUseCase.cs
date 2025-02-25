@@ -1,12 +1,11 @@
 namespace DotEmilu.UseCaseTest.UseCase;
 
-public class SampleUseCase(IVerifier<SampleRequest> verifier, IPresenter presenter)
-    : Handler<SampleRequest, SampleResponse>(verifier, presenter)
+public class SampleUseCase(IVerifier<SampleRequest> verifier)
+    : Handler<SampleRequest, SampleResponse>(verifier)
 {
-    private readonly IPresenter _presenter = presenter;
     private readonly IVerifier<SampleRequest> _verifier = verifier;
 
-    protected override async Task<SampleResponse?> HandleResponseAsync(SampleRequest request,
+    protected override async Task<SampleResponse?> HandleUseCaseAsync(SampleRequest request,
         CancellationToken cancellationToken)
     {
         var result = await SomeMethod(request, cancellationToken);
@@ -16,12 +15,6 @@ public class SampleUseCase(IVerifier<SampleRequest> verifier, IPresenter present
             _verifier.AddError("request", "invalid request");
             return null;
         }
-
-        if (request.Date.Year == 2024)
-            return ResultIn(Results.Ok($"Congratulations! {result}"));
-
-        if (request.Category >= 10)
-            return ResultIn(_presenter.Success($"{result}. Account: {request.Account}. Category: {request.Category}"));
 
         return new SampleResponse(result);
     }

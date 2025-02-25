@@ -6,7 +6,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services
     .AddDotEmilu()
-    .AddScoped<IHandler<SampleRequest>, SampleUseCase>()
+    .AddScoped<IHandler<SampleRequest,SampleResponse>, SampleUseCase>()
     .AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
 var app = builder.Build();

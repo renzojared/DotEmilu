@@ -1,8 +1,15 @@
 namespace DotEmilu;
 
 public interface IHandler<in TRequest>
+    where TRequest : IRequest
 {
-    Task<IResult> HandleAsync(TRequest request, CancellationToken cancellationToken);
+    Task HandleAsync(TRequest request, CancellationToken cancellationToken);
+}
+
+public interface IHandler<in TRequest, TResponse>
+    where TRequest : IRequest<TResponse>
+{
+    Task<TResponse?> HandleAsync(TRequest request, CancellationToken cancellationToken);
 }
 
 public interface IHandler

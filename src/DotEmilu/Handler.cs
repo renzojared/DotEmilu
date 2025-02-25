@@ -1,22 +1,56 @@
 namespace DotEmilu;
 
-public abstract class Handler<TRequest>(IVerifier<TRequest> verifier, IPresenter presenter) : IHandler<TRequest>
-    where TRequest : IBaseRequest
+public abstract class Handler<TRequest>(IVerifier<TRequest> verifier)
+    : BaseHandler, IHandler<TRequest>
+    where TRequest : IRequest
 {
-    public async Task<IResult> HandleAsync(TRequest request, CancellationToken cancellationToken)
-    {
-        try
+    public async Task HandleAsync(TRequest request, CancellationToken cancellationToken)
+        => await HandlingAsync(async () =>
         {
             await verifier.ValidateAsync(request, cancellationToken);
 
-            if (!verifier.IsValid) return presenter.ValidationError(verifier.Errors);
+            if (!verifier.IsValid)
+                return;
+
+            await HandleUseCaseAsync(request, cancellationToken);
+        });
+
+    protected abstract Task HandleUseCaseAsync(TRequest request, CancellationToken cancellationToken);
+}
+
+public abstract class Handler<TRequest, TResponse>(IVerifier<TRequest> verifier)
+    : BaseHandler, IHandler<TRequest, TResponse>
+    where TRequest : IRequest<TResponse>
+{
+    public async Task<TResponse?> HandleAsync(TRequest request, CancellationToken cancellationToken)
+        => await HandlingAsync(async () =>
+        {
+            await verifier.ValidateAsync(request, cancellationToken);
+
+            if (!verifier.IsValid)
+                return default;
 
             return await HandleUseCaseAsync(request, cancellationToken);
+        });
+
+    protected abstract Task<TResponse?> HandleUseCaseAsync(TRequest request, CancellationToken cancellationToken);
+}
+
+public abstract class BaseHandler
+{
+    protected virtual Task HandleExceptionAsync(Exception e) => Task.CompletedTask;
+    protected virtual Task FinalizeAsync() => Task.CompletedTask;
+
+    protected async Task HandlingAsync(Func<Task> action)
+    {
+        try
+        {
+            await action();
         }
         catch (Exception e)
         {
-            await HandleExceptionAsync(ref e);
-            return presenter.ServerError(e);
+            await HandleExceptionAsync(e);
+            throw;
         }
         finally
         {
@@ -24,38 +58,20 @@ public abstract class Handler<TRequest>(IVerifier<TRequest> verifier, IPresenter
         }
     }
 
-    protected abstract Task<IResult> HandleUseCaseAsync(TRequest request, CancellationToken cancellationToken);
-    protected virtual Task HandleExceptionAsync(ref Exception e) => Task.CompletedTask;
-    protected virtual Task FinalizeAsync() => Task.CompletedTask;
-}
-
-public abstract class Handler<TRequest, TResponse>(IVerifier<TRequest> verifier, IPresenter presenter)
-    : Handler<TRequest>(verifier, presenter)
-    where TRequest : IBaseRequest
-{
-    private readonly IVerifier _verifier = verifier;
-    private readonly IPresenter _presenter = presenter;
-    private IResult? Result { get; set; }
-
-    protected sealed override async Task<IResult> HandleUseCaseAsync(TRequest request,
-        CancellationToken cancellationToken)
+    protected async Task<TResponse> HandlingAsync<TResponse>(Func<Task<TResponse>> action)
     {
-        var response = await HandleResponseAsync(request, cancellationToken);
-
-        if (!_verifier.IsValid) return _presenter.ValidationError(_verifier.Errors);
-
-        if (Result is not null) return Result;
-
-        ArgumentNullException.ThrowIfNull(response);
-
-        return _presenter.Success(response);
-    }
-
-    protected abstract Task<TResponse?> HandleResponseAsync(TRequest request, CancellationToken cancellationToken);
-
-    protected TResponse? ResultIn(IResult result)
-    {
-        Result = result;
-        return default;
+        try
+        {
+            return await action();
+        }
+        catch (Exception e)
+        {
+            await HandleExceptionAsync(e);
+            throw;
+        }
+        finally
+        {
+            await FinalizeAsync();
+        }
     }
 }
