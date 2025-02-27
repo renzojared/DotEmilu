@@ -17,50 +17,46 @@ Follow these simple steps to get started:
    Create the logic for your application based on your previously defined request and expected response.
 
     ```csharp
-    public class SampleUseCase(IVerifier<SampleRequest> verifier, IPresenter presenter)
-        : Handler<SampleRequest, SampleResponse>(verifier, presenter)
-    {
-        private readonly IPresenter _presenter = presenter;
-        private readonly IVerifier<SampleRequest> _verifier = verifier;
-    
-        protected override async Task<SampleResponse?> HandleResponseAsync(SampleRequest request,
-            CancellationToken cancellationToken)
-        {
-            var result = await SomeMethod(request, cancellationToken);
-    
-            // Add custom validations
-            if (string.IsNullOrEmpty(request.Note))
-            {
-                _verifier.AddError("request", "invalid request");
-                return null;
-            }
-    
-            // To custom response you can use Results
-            if (request.Date.Year == 2024)
-                return ResultIn(Results.Ok($"Congratulations! {result}"));
-    
-            // Or standard response defined in IPresenter
-            if (request.Category >= 10)
-                return ResultIn(_presenter.Success($"{result}. Account: {request.Account}. Category: {request.Category}"));
-    
-            // By default you need return the TResponse
-            return new SampleResponse(result);
-        }
-    
-        private async Task<string> SomeMethod(SampleRequest request, CancellationToken cancellationToken)
-        {
-            // Some logic
-        }
-    }
+   public class InHandlerUseCase(IVerifier<InHandlerDto> verifier) : Handler<InHandlerDto>(verifier)
+   {
+   private readonly IVerifier<InHandlerDto> _verifier = verifier;
+   
+       protected override async Task HandleUseCaseAsync(InHandlerDto request, CancellationToken cancellationToken)
+       {
+           //Adding validations
+           if (request.Day == 1)
+           {
+               _verifier.AddError("Day", "Not valid day");
+               Console.WriteLine("Not valid day");
+               return;
+           }
+   
+           if (request.Day == 2)
+               throw new AggregateException("Not valid day Handler");
+   
+           await Task.Delay(1000, cancellationToken);
+       }
+   
+       protected override async Task HandleExceptionAsync(Exception e)
+       {
+           //Works with exception async
+           if (e is AggregateException aggregateException)
+           {
+               Console.WriteLine("AggregateException", aggregateException);
+               await Task.Delay(100);
+           }
+       }
+   }
     ```
 
 2. **Add Your Endpoint**  
    Define your endpoint using either Minimal API or a Controller, depending on your project's structure.
 
     ```csharp
-    app.MapPost("/api/sample", async ([FromBody] SampleRequest request,
-        IHandler<SampleRequest> handler,
-        CancellationToken cancellationToken) => await handler.HandleAsync(request, cancellationToken));
+    private static async Task<IResult> InHandlerCase([FromBody] InHandlerDto dto,
+        HttpHandler<InHandlerDto> handler,
+        CancellationToken cancellationToken)
+        => await handler.HandleAsync(dto, cancellationToken, Results.NoContent);
     ```
 
 3. **Register Your Dependencies**  
@@ -69,7 +65,7 @@ Follow these simple steps to get started:
     ```csharp
     builder.Services
         .AddDotEmilu()
-        .AddScoped<IHandler<SampleRequest>, SampleUseCase>()
+        .AddHandlers(Assembly.GetExecutingAssembly())
         .AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
     ```
 
