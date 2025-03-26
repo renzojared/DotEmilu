@@ -8,6 +8,9 @@ A simple, easy-to-use .NET library designed for handling HTTP requests and respo
 - Handles HTTP responses with status codes and error handling.
 - Built with **.NET 8** for cross-platform compatibility (Windows, Linux, macOS).
 - Supports **async/await** for non-blocking HTTP calls.
+- Includes request contracts and base constraints for verifiers.
+- Provides an **HttpHandler** to simplify request handling.
+- New extension method to register handlers using reflection for cleaner setup.
 
 ## How to Use
 
@@ -16,58 +19,57 @@ Follow these simple steps to get started:
 1. **Build Your Logic**  
    Create the logic for your application based on your previously defined request and expected response.
 
-    ```csharp
-   public class InHandlerUseCase(IVerifier<InHandlerDto> verifier) : Handler<InHandlerDto>(verifier)
+   ```csharp
+   public class FullUseCase(
+       IVerifier<FullDto> verifier,
+       IVerifier<InDto> verifierIn,
+       IHandler<InDto> handlerIn)
+       : Handler<FullDto, FullOutDto>(verifier)
    {
-   private readonly IVerifier<InHandlerDto> _verifier = verifier;
+       private readonly IVerifier<FullDto> _verifier = verifier;
    
-       protected override async Task HandleUseCaseAsync(InHandlerDto request, CancellationToken cancellationToken)
+       protected override async Task<FullOutDto?> HandleUseCaseAsync(FullDto request, CancellationToken cancellationToken)
        {
-           //Adding validations
-           if (request.Day == 1)
+           Console.WriteLine("Handling my primary use case...");
+   
+           var requestIn = new InDto(request.Day);
+   
+           await WorksSecondCaseAsync(requestIn, cancellationToken);
+   
+           if (!verifierIn.IsValid)
            {
-               _verifier.AddError("Day", "Not valid day");
-               Console.WriteLine("Not valid day");
-               return;
+               _verifier.AddErrors(verifierIn.Errors.ToList());
+               _verifier.AddError("BehindCase", "Second case has errors");
+               return null;
            }
    
-           if (request.Day == 2)
-               throw new AggregateException("Not valid day Handler");
-   
-           await Task.Delay(1000, cancellationToken);
+           return new FullOutDto();
        }
    
-       protected override async Task HandleExceptionAsync(Exception e)
-       {
-           //Works with exception async
-           if (e is AggregateException aggregateException)
-           {
-               Console.WriteLine("AggregateException", aggregateException);
-               await Task.Delay(100);
-           }
-       }
+       private async Task WorksSecondCaseAsync(InDto request, CancellationToken cancellationToken)
+           => await handlerIn.HandleAsync(request, cancellationToken);
    }
-    ```
+   ```
 
 2. **Add Your Endpoint**  
    Define your endpoint using either Minimal API or a Controller, depending on your project's structure.
 
-    ```csharp
-    private static async Task<IResult> InHandlerCase([FromBody] InHandlerDto dto,
-        HttpHandler<InHandlerDto> handler,
-        CancellationToken cancellationToken)
-        => await handler.HandleAsync(dto, cancellationToken, Results.NoContent);
-    ```
+   ```csharp
+       private static async Task<IResult> FullCase([FromBody] FullDto dto,
+           HttpHandler<FullDto, FullOutDto> handler,
+           CancellationToken cancellationToken)
+           => await handler.HandleAsync(dto, cancellationToken, _ => Results.NoContent());
+   ```
 
 3. **Register Your Dependencies**  
    Ensure all required dependencies are registered in your application's dependency injection container.
 
-    ```csharp
-    builder.Services
-        .AddDotEmilu()
-        .AddHandlers(Assembly.GetExecutingAssembly())
-        .AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-    ```
+   ```csharp
+   builder.Services
+       .AddDotEmilu()
+       .AddHandlers(Assembly.GetExecutingAssembly())
+       .AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+   ```
 
 For a [complete example](https://github.com/renzojared/DotEmilu/tree/main/src/tests/DotEmilu.UseCaseTest)
 
