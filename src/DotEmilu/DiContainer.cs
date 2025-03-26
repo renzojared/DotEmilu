@@ -1,5 +1,6 @@
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace DotEmilu;
 
@@ -27,7 +28,7 @@ public static class DiContainer
         foreach (var implementation in implementations)
         {
             var interfaceHandler = implementation.GetInterfaces().First(IsHandlerInterface);
-            services.AddScoped(interfaceHandler, implementation);
+            services.TryAddScoped(interfaceHandler, implementation);
         }
 
         return services;
@@ -52,7 +53,7 @@ public static class DiContainer
 
         foreach (var chainHandler in chainHandlers)
         {
-            services.AddScoped(chainHandler);
+            services.TryAddScoped(chainHandler);
         }
 
         return services;
