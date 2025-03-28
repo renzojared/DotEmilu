@@ -8,6 +8,9 @@ A simple, easy-to-use .NET library designed for handling HTTP requests and respo
 - Handles HTTP responses with status codes and error handling.
 - Built with **.NET 8** for cross-platform compatibility (Windows, Linux, macOS).
 - Supports **async/await** for non-blocking HTTP calls.
+- Includes request contracts and base constraints for verifiers.
+- Provides an **HttpHandler** to simplify request handling.
+- New extension method to register handlers using reflection for cleaner setup.
 
 ## How to Use
 
@@ -16,62 +19,57 @@ Follow these simple steps to get started:
 1. **Build Your Logic**  
    Create the logic for your application based on your previously defined request and expected response.
 
-    ```csharp
-    public class SampleUseCase(IVerifier<SampleRequest> verifier, IPresenter presenter)
-        : Handler<SampleRequest, SampleResponse>(verifier, presenter)
-    {
-        private readonly IPresenter _presenter = presenter;
-        private readonly IVerifier<SampleRequest> _verifier = verifier;
-    
-        protected override async Task<SampleResponse?> HandleResponseAsync(SampleRequest request,
-            CancellationToken cancellationToken)
-        {
-            var result = await SomeMethod(request, cancellationToken);
-    
-            // Add custom validations
-            if (string.IsNullOrEmpty(request.Note))
-            {
-                _verifier.AddError("request", "invalid request");
-                return null;
-            }
-    
-            // To custom response you can use Results
-            if (request.Date.Year == 2024)
-                return ResultIn(Results.Ok($"Congratulations! {result}"));
-    
-            // Or standard response defined in IPresenter
-            if (request.Category >= 10)
-                return ResultIn(_presenter.Success($"{result}. Account: {request.Account}. Category: {request.Category}"));
-    
-            // By default you need return the TResponse
-            return new SampleResponse(result);
-        }
-    
-        private async Task<string> SomeMethod(SampleRequest request, CancellationToken cancellationToken)
-        {
-            // Some logic
-        }
-    }
-    ```
+   ```csharp
+   public class FullUseCase(
+       IVerifier<FullDto> verifier,
+       IVerifier<InDto> verifierIn,
+       IHandler<InDto> handlerIn)
+       : Handler<FullDto, FullOutDto>(verifier)
+   {
+       private readonly IVerifier<FullDto> _verifier = verifier;
+   
+       protected override async Task<FullOutDto?> HandleUseCaseAsync(FullDto request, CancellationToken cancellationToken)
+       {
+           Console.WriteLine("Handling my primary use case...");
+   
+           var requestIn = new InDto(request.Day);
+   
+           await WorksSecondCaseAsync(requestIn, cancellationToken);
+   
+           if (!verifierIn.IsValid)
+           {
+               _verifier.AddErrors(verifierIn.Errors.ToList());
+               _verifier.AddError("BehindCase", "Second case has errors");
+               return null;
+           }
+   
+           return new FullOutDto();
+       }
+   
+       private async Task WorksSecondCaseAsync(InDto request, CancellationToken cancellationToken)
+           => await handlerIn.HandleAsync(request, cancellationToken);
+   }
+   ```
 
 2. **Add Your Endpoint**  
    Define your endpoint using either Minimal API or a Controller, depending on your project's structure.
 
-    ```csharp
-    app.MapPost("/api/sample", async ([FromBody] SampleRequest request,
-        IHandler<SampleRequest> handler,
-        CancellationToken cancellationToken) => await handler.HandleAsync(request, cancellationToken));
-    ```
+   ```csharp
+       private static async Task<IResult> FullCase([FromBody] FullDto dto,
+           HttpHandler<FullDto, FullOutDto> handler,
+           CancellationToken cancellationToken)
+           => await handler.HandleAsync(dto, cancellationToken, _ => Results.NoContent());
+   ```
 
 3. **Register Your Dependencies**  
    Ensure all required dependencies are registered in your application's dependency injection container.
 
-    ```csharp
-    builder.Services
-        .AddDotEmilu()
-        .AddScoped<IHandler<SampleRequest>, SampleUseCase>()
-        .AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-    ```
+   ```csharp
+   builder.Services
+       .AddDotEmilu()
+       .AddHandlers(Assembly.GetExecutingAssembly())
+       .AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+   ```
 
 For a [complete example](https://github.com/renzojared/DotEmilu/tree/main/src/tests/DotEmilu.UseCaseTest)
 

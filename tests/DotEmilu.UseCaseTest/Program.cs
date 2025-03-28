@@ -1,13 +1,13 @@
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services
+    .AddDotEmilu()
+    .AddHandlers(Assembly.GetExecutingAssembly())
+    .AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services
-    .AddDotEmilu()
-    .AddScoped<IHandler<SampleRequest>, SampleUseCase>()
-    .AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
 var app = builder.Build();
 
