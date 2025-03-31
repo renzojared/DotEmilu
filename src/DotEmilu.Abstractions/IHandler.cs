@@ -1,4 +1,4 @@
-namespace DotEmilu;
+namespace DotEmilu.Abstractions;
 
 public interface IHandler<in TRequest>
     where TRequest : IRequest
