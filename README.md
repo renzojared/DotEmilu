@@ -2,6 +2,12 @@
 
 A simple, easy-to-use .NET library designed for handling HTTP requests and responses.
 
+## All packages available
+
+- [DotEmilu.Abstractions](https://www.nuget.org/packages/DotEmilu.Abstractions)
+- [DotEmilu](https://www.nuget.org/packages/DotEmilu)
+- [DotEmilu.AspNetCore](https://www.nuget.org/packages/DotEmilu.AspNetCore)
+
 ## Features
 
 - Supports **GET**, **POST**, **PUT**, and **DELETE** requests.
