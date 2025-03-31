@@ -6,19 +6,10 @@ namespace DotEmilu;
 
 public static class DiContainer
 {
-    public static IServiceCollection AddDotEmilu(this IServiceCollection services)
+    public static IServiceCollection AddVerifier(this IServiceCollection services)
     {
-        services
-            .AddOptions<ResultMessage>()
-            .BindConfiguration(ResultMessage.SectionKey)
-            .ValidateDataAnnotations()
-            .ValidateOnStart();
-
-        return services
-            .AddScoped(typeof(IVerifier<>), typeof(Verifier<>))
-            .AddScoped<IPresenter, Presenter>()
-            .AddScoped(typeof(HttpHandler<>))
-            .AddScoped(typeof(HttpHandler<,>));
+        services.TryAddScoped(typeof(IVerifier<>), typeof(Verifier<>));
+        return services;
     }
 
     public static IServiceCollection AddHandlers(this IServiceCollection services, Assembly assembly)
