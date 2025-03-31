@@ -15,6 +15,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{638BB23D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotEmilu.UseCaseTest", "tests\DotEmilu.UseCaseTest\DotEmilu.UseCaseTest.csproj", "{81CBC31D-ADAF-4D52-9679-5EABD1BB92FF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotEmilu.Abstractions", "src\DotEmilu.Abstractions\DotEmilu.Abstractions.csproj", "{77CAD6DF-51B6-4853-AC96-56F1C2614518}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotEmilu.AspNetCore", "src\DotEmilu.AspNetCore\DotEmilu.AspNetCore.csproj", "{CFD0CACA-35B5-470D-9327-2F98AFE1A1C0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +27,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{9C7C27D9-7FC8-40D9-8C52-64588602B3F1} = {6B69CFE7-3241-4A73-B82C-B182846753BF}
 		{81CBC31D-ADAF-4D52-9679-5EABD1BB92FF} = {638BB23D-D0D4-4124-B947-19095B7229FD}
+		{77CAD6DF-51B6-4853-AC96-56F1C2614518} = {6B69CFE7-3241-4A73-B82C-B182846753BF}
+		{CFD0CACA-35B5-470D-9327-2F98AFE1A1C0} = {6B69CFE7-3241-4A73-B82C-B182846753BF}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{9C7C27D9-7FC8-40D9-8C52-64588602B3F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -33,5 +39,13 @@ Global
 		{81CBC31D-ADAF-4D52-9679-5EABD1BB92FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81CBC31D-ADAF-4D52-9679-5EABD1BB92FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81CBC31D-ADAF-4D52-9679-5EABD1BB92FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77CAD6DF-51B6-4853-AC96-56F1C2614518}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77CAD6DF-51B6-4853-AC96-56F1C2614518}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77CAD6DF-51B6-4853-AC96-56F1C2614518}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77CAD6DF-51B6-4853-AC96-56F1C2614518}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFD0CACA-35B5-470D-9327-2F98AFE1A1C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFD0CACA-35B5-470D-9327-2F98AFE1A1C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFD0CACA-35B5-470D-9327-2F98AFE1A1C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFD0CACA-35B5-470D-9327-2F98AFE1A1C0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
