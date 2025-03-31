@@ -1,4 +1,4 @@
-namespace DotEmilu;
+namespace DotEmilu.AspNetCore;
 
 public class HttpHandler<TRequest>(IHandler<TRequest> handler, IVerifier<TRequest> verifier, IPresenter presenter)
     where TRequest : IRequest

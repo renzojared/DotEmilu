@@ -1,4 +1,4 @@
-namespace DotEmilu;
+namespace DotEmilu.AspNetCore;
 
 public class ResultMessage
 {
