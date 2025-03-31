@@ -5,14 +5,36 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Version>2.0.1</Version>
+        <Title>DotEmilu AspNetCore</Title>
+        <Authors>renzojared</Authors>
+        <Description>Simple .NET library to handle http requests in AspNetCore</Description>
+        <Copyright>Copyright © DotEmilu</Copyright>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageIcon>icon.jpg</PackageIcon>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageTags>aspnetcore;webapi;handler;request;http;renzojared;dotemilu</PackageTags>
+        <PackageDescription>Simple .NET library to handle http requests in AspNetCore</PackageDescription>
+        <PackageReleaseNotes>
+            Initial release with essential contracts for handling HTTP requests and responses.
+            Includes dependency injection setup, HTTP handlers, presenters, and result messaging support.
+        </PackageReleaseNotes>
+        <RepositoryUrl>https://github.com/renzojared/DotEmilu</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\DotEmilu\DotEmilu.csproj" />
+        <PackageReference Include="DotEmilu" Version="2.0.1" />
     </ItemGroup>
 
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="..\..\assets\icon.jpg" Pack="true" Visible="false" PackagePath="/" />
+        <None Include="..\..\README.md" Pack="true" Visible="false" PackagePath="/" />
     </ItemGroup>
 
 </Project>
