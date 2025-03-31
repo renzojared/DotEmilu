@@ -1,4 +1,4 @@
-namespace DotEmilu;
+namespace DotEmilu.Abstractions;
 
 public interface IVerifier<in TRequest> : IVerifier
     where TRequest : IBaseRequest
