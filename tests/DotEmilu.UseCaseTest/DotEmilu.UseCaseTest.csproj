@@ -13,7 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\DotEmilu\DotEmilu.csproj" />
+      <ProjectReference Include="..\..\src\DotEmilu.AspNetCore\DotEmilu.AspNetCore.csproj" />
     </ItemGroup>
 
 </Project>
