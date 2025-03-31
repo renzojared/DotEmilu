@@ -71,7 +71,7 @@ Follow these simple steps to get started:
        .AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
    ```
 
-For a [complete example](https://github.com/renzojared/DotEmilu/tree/main/src/tests/DotEmilu.UseCaseTest)
+For a [complete example](https://github.com/renzojared/DotEmilu/tree/main/tests/DotEmilu.UseCaseTest)
 
 ## Notes:
 
