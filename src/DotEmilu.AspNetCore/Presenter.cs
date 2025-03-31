@@ -1,4 +1,4 @@
-namespace DotEmilu;
+namespace DotEmilu.AspNetCore;
 
 internal sealed class Presenter(IOptionsMonitor<ResultMessage> options, IHostEnvironment environment) : IPresenter
 {
