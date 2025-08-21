@@ -6,7 +6,7 @@
         <Nullable>enable</Nullable>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>2.0.1</Version>
+        <Version>2.0.2</Version>
         <Title>DotEmilu AspNetCore</Title>
         <Authors>renzojared</Authors>
         <Description>Simple .NET library to handle http requests in AspNetCore</Description>
@@ -17,8 +17,10 @@
         <PackageTags>aspnetcore;webapi;handler;request;http;renzojared;dotemilu</PackageTags>
         <PackageDescription>Simple .NET library to handle http requests in AspNetCore</PackageDescription>
         <PackageReleaseNotes>
-            Initial release with essential contracts for handling HTTP requests and responses.
-            Includes dependency injection setup, HTTP handlers, presenters, and result messaging support.
+            - Added async HTTP request handling utility with delegates
+            - Replaced Results with TypedResults for better type safety
+            - Improved error handling and code maintainability
+            - Updated test endpoints with AsDelegate.ForAsync pattern
         </PackageReleaseNotes>
         <RepositoryUrl>https://github.com/renzojared/DotEmilu</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
