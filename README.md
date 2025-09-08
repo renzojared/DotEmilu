@@ -64,7 +64,7 @@ Follow these simple steps to get started:
        private static async Task<IResult> FullCase([FromBody] FullDto dto,
            HttpHandler<FullDto, FullOutDto> handler,
            CancellationToken cancellationToken)
-           => await handler.HandleAsync(dto, cancellationToken, _ => Results.NoContent());
+           => await handler.HandleAsync(dto, cancellationToken, _ => TypedResults.NoContent());
    ```
 
 3. **Register Your Dependencies**  

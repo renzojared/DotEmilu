@@ -31,7 +31,7 @@ public static class MapEndpoint
         CancellationToken cancellationToken)
     {
         await handler.HandleAsync(dto, cancellationToken);
-        return Results.Ok(verifier.Errors);
+        return TypedResults.Ok(verifier.Errors);
     }
 
     private static async Task<IResult> InOutCase([FromBody] InOutDto dto,
@@ -41,16 +41,16 @@ public static class MapEndpoint
     {
         var response = await handler.HandleAsync(dto, cancellationToken);
         if (!verifier.IsValid)
-            return Results.BadRequest(verifier.Errors);
+            return TypedResults.BadRequest(verifier.Errors);
 
-        return Results.Ok(response);
+        return TypedResults.Ok(response);
     }
 
     [Obsolete("Use AsDelegate.ForAsync<T>")]
     private static async Task<IResult> InHandlerCase([FromBody] InHandlerDto dto,
         HttpHandler<InHandlerDto> handler,
         CancellationToken cancellationToken)
-        => await handler.HandleAsync(dto, cancellationToken, Results.NoContent);
+        => await handler.HandleAsync(dto, cancellationToken, TypedResults.NoContent);
 
     [Obsolete("Use AsDelegate.ForAsync<T, TResponse>")]
     private static async Task<IResult> InOutHandlerCase([FromBody] InOutHandlerDto dto,
@@ -61,5 +61,5 @@ public static class MapEndpoint
     private static async Task<IResult> FullCase([FromBody] FullDto dto,
         HttpHandler<FullDto, FullOutDto> handler,
         CancellationToken cancellationToken)
-        => await handler.HandleAsync(dto, cancellationToken, _ => Results.NoContent());
+        => await handler.HandleAsync(dto, cancellationToken, _ => TypedResults.NoContent());
 }
