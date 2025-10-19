@@ -13,7 +13,7 @@ public class HttpHandler<TRequest>(IHandler<TRequest> handler, IVerifier<TReques
             if (!verifier.IsValid)
                 return presenter.ValidationError(verifier.Errors);
 
-            return result is not null ? result.Invoke() : Results.Ok();
+            return result is not null ? result.Invoke() : TypedResults.Ok();
         }
         catch (Exception e)
         {
