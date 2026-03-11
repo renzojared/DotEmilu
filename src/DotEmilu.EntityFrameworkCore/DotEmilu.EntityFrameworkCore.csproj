@@ -1,14 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup Label="Package Metadata">
-        <Title>DotEmilu</Title>
-        <Description>Simple .NET library to handle use cases</Description>
-        <PackageTags>use-case;handler;request;renzojared;dotemilu</PackageTags>
+        <Title>DotEmilu EF Core</Title>
+        <Description>Simple .NET library to work with Entity Framework Core</Description>
+        <PackageTags>interceptor;entity;auditable;entity-framework-core;renzojared;dotemilu</PackageTags>
     </PropertyGroup>
 
     <ItemGroup Label="Dependencies">
         <ProjectReference Include="..\DotEmilu.Abstractions\DotEmilu.Abstractions.csproj"/>
-        <PackageReference Include="FluentValidation.DependencyInjectionExtensions"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational"/>
     </ItemGroup>
 
     <ItemGroup Label="Packaging">

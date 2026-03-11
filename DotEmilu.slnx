@@ -1,0 +1,18 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="LICENSE" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/DotEmilu.Abstractions/DotEmilu.Abstractions.csproj" />
+    <Project Path="src/DotEmilu.AspNetCore/DotEmilu.AspNetCore.csproj" />
+    <Project Path="src/DotEmilu.EntityFrameworkCore/DotEmilu.EntityFrameworkCore.csproj" />
+    <Project Path="src/DotEmilu/DotEmilu.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/DotEmilu.UseCaseTest/DotEmilu.UseCaseTest.csproj" />
+  </Folder>
+</Solution>
