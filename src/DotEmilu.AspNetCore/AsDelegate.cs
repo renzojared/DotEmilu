@@ -1,5 +1,12 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace DotEmilu.AspNetCore;
 
+/// <summary>
+/// Provides extension methods for converting handlers into delegates usable by Minimal APIs.
+/// </summary>
+[SuppressMessage("Naming", "CA1711:Identifiers should not have incorrect suffix",
+    Justification = "AsDelegate is an intentional fluent API name.")]
 public static class AsDelegate
 {
     /// <summary>
