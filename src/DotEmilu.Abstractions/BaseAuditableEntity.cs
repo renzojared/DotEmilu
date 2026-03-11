@@ -9,11 +9,22 @@ namespace DotEmilu.Abstractions;
 public interface IBaseAuditableEntity<TUserKey> : IBaseEntity
     where TUserKey : struct
 {
+    /// <summary>Gets or sets the creation date and time.</summary>
     public DateTimeOffset Created { get; set; }
+
+    /// <summary>Gets or sets the identifier of the creator.</summary>
     public TUserKey CreatedBy { get; set; }
+
+    /// <summary>Gets or sets the last modification date and time.</summary>
     public DateTimeOffset LastModified { get; set; }
+
+    /// <summary>Gets or sets the identifier of the user who last modified the entity.</summary>
     public TUserKey LastModifiedBy { get; set; }
+
+    /// <summary>Gets or sets the deletion date and time, if applicable.</summary>
     public DateTimeOffset? Deleted { get; set; }
+
+    /// <summary>Gets or sets the identifier of the user who deleted the entity, if applicable.</summary>
     public TUserKey? DeletedBy { get; set; }
 }
 
@@ -25,18 +36,31 @@ public interface IBaseAuditableEntity<TUserKey> : IBaseEntity
 public abstract class BaseAuditableEntity<TUserKey> : IBaseAuditableEntity<TUserKey>
     where TUserKey : struct
 {
+    /// <inheritdoc />
     public bool IsDeleted { get; set; }
+
+    /// <inheritdoc />
     public DateTimeOffset Created { get; set; }
+
+    /// <inheritdoc />
     public TUserKey CreatedBy { get; set; }
+
+    /// <inheritdoc />
     public DateTimeOffset LastModified { get; set; }
+
+    /// <inheritdoc />
     public TUserKey LastModifiedBy { get; set; }
+
+    /// <inheritdoc />
     public DateTimeOffset? Deleted { get; set; }
+
+    /// <inheritdoc />
     public TUserKey? DeletedBy { get; set; }
 }
 
 /// <summary>
 /// Represents an auditable entity that combines base entity properties with audit tracking information.
-/// This interface extends both IBaseEntity&lt;TKey&gt; and IBaseAuditableEntity&lt;TUserKey&gt;, providing
+/// This interface extends both IBaseEntity&lt;TKey&gt; and IBaseAuditableEntity&lt;TUserKey&gt; providing
 /// a unified contract for entities that require both a primary key and audit details.
 /// </summary>
 /// <typeparam name="TKey">The type of the primary key for the entity.</typeparam>
@@ -55,12 +79,27 @@ public abstract class BaseAuditableEntity<TKey, TUserKey> : IBaseAuditableEntity
     where TKey : struct
     where TUserKey : struct
 {
+    /// <inheritdoc />
     public TKey Id { get; set; }
+
+    /// <inheritdoc />
     public bool IsDeleted { get; set; }
+
+    /// <inheritdoc />
     public DateTimeOffset Created { get; set; }
+
+    /// <inheritdoc />
     public TUserKey CreatedBy { get; set; }
+
+    /// <inheritdoc />
     public DateTimeOffset LastModified { get; set; }
+
+    /// <inheritdoc />
     public TUserKey LastModifiedBy { get; set; }
+
+    /// <inheritdoc />
     public DateTimeOffset? Deleted { get; set; }
+
+    /// <inheritdoc />
     public TUserKey? DeletedBy { get; set; }
 }

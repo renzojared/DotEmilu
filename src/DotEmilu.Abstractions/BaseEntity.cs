@@ -6,6 +6,7 @@ namespace DotEmilu.Abstractions;
 /// </summary>
 public interface IBaseEntity
 {
+    /// <summary>Gets or sets a value indicating whether the entity is deleted.</summary>
     bool IsDeleted { get; set; }
 }
 
@@ -18,6 +19,7 @@ public interface IBaseEntity
 public interface IBaseEntity<TKey> : IBaseEntity
     where TKey : struct
 {
+    /// <summary>Gets or sets the entity identifier.</summary>
     TKey Id { get; set; }
 }
 
@@ -29,6 +31,9 @@ public interface IBaseEntity<TKey> : IBaseEntity
 public abstract class BaseEntity<TKey> : IBaseEntity<TKey>
     where TKey : struct
 {
+    /// <inheritdoc />
     public TKey Id { get; set; }
+
+    /// <inheritdoc />
     public bool IsDeleted { get; set; }
 }
