@@ -11,7 +11,7 @@ public class HttpHandler<TRequest>(IHandler<TRequest> handler, IVerifier<TReques
             await handler.HandleAsync(request, cancellationToken);
 
             if (!verifier.IsValid)
-                return presenter.ValidationError(verifier.Errors);
+                return presenter.ValidationError(verifier.ValidationErrors);
 
             return result is not null ? result.Invoke() : TypedResults.Ok();
         }
@@ -36,7 +36,7 @@ public class HttpHandler<TRequest, TResponse>(
             var response = await handler.HandleAsync(request, cancellationToken);
 
             if (!verifier.IsValid)
-                return presenter.ValidationError(verifier.Errors);
+                return presenter.ValidationError(verifier.ValidationErrors);
 
             if (result is not null)
                 return result.Invoke(response);

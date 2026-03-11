@@ -8,9 +8,9 @@ public interface IVerifier<in TRequest> : IVerifier
 
 public interface IVerifier
 {
-    IReadOnlyCollection<ValidationFailure> Errors { get; }
+    IReadOnlyCollection<ValidationFailure> ValidationErrors { get; }
     bool IsValid { get; }
-    void AddErrors(in List<ValidationFailure> errors);
-    void AddError(in ValidationFailure error);
-    void AddError(in string propertyName, in string errorMessage);
+    void AddValidationErrors(in List<ValidationFailure> validationErrors);
+    void AddValidationError(in ValidationFailure validationError);
+    void AddValidationError(in string propertyName, in string errorMessage);
 }

@@ -18,8 +18,8 @@ public class FullUseCase(
 
         if (!verifierIn.IsValid)
         {
-            _verifier.AddErrors(verifierIn.Errors.ToList());
-            _verifier.AddError("BehindCase", "Second case has errors");
+            _verifier.AddValidationErrors(verifierIn.ValidationErrors.ToList());
+            _verifier.AddValidationError("BehindCase", "Second case has errors");
             return null;
         }
 

@@ -12,7 +12,7 @@ public class InOutUseCase(IVerifier<InOutDto> verifier) : Handler<InOutDto, InOu
         if (request.Day == 2)
         {
             Console.WriteLine("Has error");
-            _verifier.AddError("Day", "Sample error");
+            _verifier.AddValidationError("Day", "Sample error");
             return null;
         }
 

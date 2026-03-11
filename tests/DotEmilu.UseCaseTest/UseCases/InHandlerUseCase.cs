@@ -8,7 +8,7 @@ public class InHandlerUseCase(IVerifier<InHandlerDto> verifier) : Handler<InHand
     {
         if (request.Day == 1)
         {
-            _verifier.AddError("Day", "Not valid day");
+            _verifier.AddValidationError("Day", "Not valid day");
             Console.WriteLine("Not valid day");
             return;
         }

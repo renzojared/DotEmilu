@@ -31,7 +31,7 @@ public static class MapEndpoint
         CancellationToken cancellationToken)
     {
         await handler.HandleAsync(dto, cancellationToken);
-        return TypedResults.Ok(verifier.Errors);
+        return TypedResults.Ok(verifier.ValidationErrors);
     }
 
     private static async Task<IResult> InOutCase([FromBody] InOutDto dto,
@@ -41,7 +41,7 @@ public static class MapEndpoint
     {
         var response = await handler.HandleAsync(dto, cancellationToken);
         if (!verifier.IsValid)
-            return TypedResults.BadRequest(verifier.Errors);
+            return TypedResults.BadRequest(verifier.ValidationErrors);
 
         return TypedResults.Ok(response);
     }
