@@ -6,7 +6,7 @@
 
     <ItemGroup Label="Build Tools">
         <PackageVersion Include="MinVer" Version="7.0.0"/>
-        <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.200"/>
+        <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.201"/>
     </ItemGroup>
 
     <ItemGroup Label="Core">
@@ -15,12 +15,17 @@
     </ItemGroup>
 
     <ItemGroup Label="EF Core">
-        <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.4"/>
-        <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.4"/>
+        <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.5"/>
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.5"/>
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.5"/>
     </ItemGroup>
 
-    <ItemGroup Label="Tests">
-        <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.4"/>
+    <ItemGroup Label="DI">
+        <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.5"/>
+    </ItemGroup>
+
+    <ItemGroup Label="Web">
+        <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.5"/>
         <PackageVersion Include="Swashbuckle.AspNetCore" Version="10.1.5"/>
     </ItemGroup>
 
