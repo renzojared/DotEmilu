@@ -1,0 +1,39 @@
+<Project>
+
+    <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))"/>
+
+    <PropertyGroup Label="Documentation">
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
+
+    <ItemGroup Label="Build Tools">
+        <PackageReference Include="MinVer" PrivateAssets="All"/>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All"/>
+    </ItemGroup>
+
+    <PropertyGroup Label="Package">
+        <MinVerTagPrefix>v</MinVerTagPrefix>
+        <Authors>renzojared</Authors>
+        <Copyright>Copyright © DotEmilu</Copyright>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <RepositoryUrl>https://github.com/renzojared/DotEmilu</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageProjectUrl>https://github.com/renzojared/DotEmilu</PackageProjectUrl>
+        <PackageReleaseNotes>https://github.com/renzojared/DotEmilu/releases</PackageReleaseNotes>
+        <PackageIcon>icon.jpg</PackageIcon>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+    </PropertyGroup>
+
+    <PropertyGroup Label="SourceLink">
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    </PropertyGroup>
+
+    <ItemGroup Label="Assets">
+        <None Include="$(MSBuildThisFileDirectory)../assets/icon.jpg"
+              Pack="true" Visible="false" PackagePath="/"/>
+    </ItemGroup>
+
+</Project>

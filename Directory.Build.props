@@ -5,23 +5,6 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    </PropertyGroup>
-
-    <ItemGroup Label="Build Tools">
-        <PackageReference Include="MinVer" PrivateAssets="All"/>
-        <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All"/>
-    </ItemGroup>
-
-    <PropertyGroup Label="Package">
-        <MinVerTagPrefix>v</MinVerTagPrefix>
-        <Authors>renzojared</Authors>
-        <Copyright>Copyright © DotEmilu</Copyright>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <RepositoryUrl>https://github.com/renzojared/DotEmilu</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
-        <PackageIcon>icon.jpg</PackageIcon>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
     <PropertyGroup Label="Analysis">
@@ -31,20 +14,8 @@
         <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     </PropertyGroup>
 
-    <PropertyGroup Label="SourceLink">
-        <PublishRepositoryUrl>true</PublishRepositoryUrl>
-        <EmbedUntrackedSources>true</EmbedUntrackedSources>
-        <IncludeSymbols>true</IncludeSymbols>
-        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    </PropertyGroup>
-
     <PropertyGroup Label="CI" Condition="'$(CI)' == 'true'">
         <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     </PropertyGroup>
-
-    <ItemGroup Label="Assets">
-        <None Include="$(MSBuildThisFileDirectory)assets\icon.jpg"
-              Pack="true" Visible="false" PackagePath="/"/>
-    </ItemGroup>
 
 </Project>

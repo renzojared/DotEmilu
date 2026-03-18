@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\DotEmilu.AspNetCore\DotEmilu.AspNetCore.csproj"/>
+        <ProjectReference Include="..\..\src\DotEmilu.EntityFrameworkCore\DotEmilu.EntityFrameworkCore.csproj"/>
+        <ProjectReference Include="..\DotEmilu.Samples.Domain\DotEmilu.Samples.Domain.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory"/>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi"/>
+    </ItemGroup>
+
+</Project>

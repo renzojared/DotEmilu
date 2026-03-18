@@ -1,4 +1,10 @@
 <Solution>
+  <Folder Name="/samples/">
+    <Project Path="samples/DotEmilu.Samples.ConsoleApp/DotEmilu.Samples.ConsoleApp.csproj" />
+    <Project Path="samples/DotEmilu.Samples.Domain/DotEmilu.Samples.Domain.csproj" />
+    <Project Path="samples/DotEmilu.Samples.EntityFrameworkCore/DotEmilu.Samples.EntityFrameworkCore.csproj" />
+    <Project Path="samples/DotEmilu.Samples.FullApp/DotEmilu.Samples.FullApp.csproj" />
+  </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".gitignore" />
     <File Path="Directory.Build.props" />

@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\DotEmilu.Abstractions\DotEmilu.Abstractions.csproj"/>
+    </ItemGroup>
+
+</Project>
