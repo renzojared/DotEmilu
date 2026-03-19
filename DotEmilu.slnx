@@ -19,6 +19,7 @@
     <Project Path="src/DotEmilu/DotEmilu.csproj" />
   </Folder>
   <Folder Name="/tests/">
-    <Project Path="tests/DotEmilu.UseCaseTest/DotEmilu.UseCaseTest.csproj" />
+    <Project Path="tests/DotEmilu.UnitTests/DotEmilu.UnitTests.csproj" />
+    <Project Path="tests/DotEmilu.IntegrationTests/DotEmilu.IntegrationTests.csproj" />
   </Folder>
 </Solution>
