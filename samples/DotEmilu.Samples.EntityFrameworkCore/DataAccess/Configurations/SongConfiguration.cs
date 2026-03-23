@@ -1,3 +1,4 @@
+using DotEmilu.EntityFrameworkCore;
 using DotEmilu.EntityFrameworkCore.Extensions;
 using DotEmilu.Samples.EntityFrameworkCore.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -26,5 +27,9 @@ public class SongConfiguration : IEntityTypeConfiguration<Song>
 
         builder
             .UseIsDeleted(useShort: true, useIndex: true, useQueryFilter: true, order: 1);
+
+        // Per-entity override example. With no hierarchy this remains intent metadata,
+        // but it demonstrates the explicit override API from EntityTypeBuilderExtensions.
+        builder.ApplyMappingStrategy(MappingStrategy.Tpt);
     }
 }
