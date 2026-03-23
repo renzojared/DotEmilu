@@ -46,9 +46,9 @@ internal sealed class Scenario : IScenario
                 .GetRequiredService<IVerifier<ProcessOrderRequest>>();
 
             var request = new ProcessOrderRequest(
-                OrderId:       "ORD-100",
+                OrderId: "ORD-100",
                 CustomerEmail: "customer@example.com",
-                TotalAmount:   4_500.00m);
+                TotalAmount: 4_500.00m);
 
             var result = await handler.HandleAsync(request, CancellationToken.None);
 
@@ -73,9 +73,9 @@ internal sealed class Scenario : IScenario
                 .GetRequiredService<IVerifier<ProcessOrderRequest>>();
 
             var overThreshold = new ProcessOrderRequest(
-                OrderId:       "ORD-101",
+                OrderId: "ORD-101",
                 CustomerEmail: "vip@example.com",
-                TotalAmount:   25_000.00m);
+                TotalAmount: 25_000.00m);
 
             var result = await handler.HandleAsync(overThreshold, CancellationToken.None);
 
@@ -102,9 +102,9 @@ internal sealed class Scenario : IScenario
                 .GetRequiredService<IVerifier<ProcessOrderRequest>>();
 
             var invalid = new ProcessOrderRequest(
-                OrderId:       "",
+                OrderId: "",
                 CustomerEmail: "someone@example.com",
-                TotalAmount:   500.00m);
+                TotalAmount: 500.00m);
 
             var result = await handler.HandleAsync(invalid, CancellationToken.None);
 

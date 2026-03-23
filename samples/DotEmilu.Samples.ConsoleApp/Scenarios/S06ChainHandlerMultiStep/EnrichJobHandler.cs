@@ -18,7 +18,8 @@ internal sealed class EnrichJobHandler : ChainHandler<SyncJobContext>
 
         foreach (var source in chain.ValidatedItems)
         {
-            var payload = $"{{ \"source\": \"{source}\", \"enrichedAt\": \"{DateTimeOffset.UtcNow:O}\", \"recordCount\": {Random.Shared.Next(10, 500)} }}";
+            var payload =
+                $"{{ \"source\": \"{source}\", \"enrichedAt\": \"{DateTimeOffset.UtcNow:O}\", \"recordCount\": {Random.Shared.Next(10, 500)} }}";
             chain.EnrichedPayloads.Add(payload);
             Console.WriteLine($"     ✓ Enriched: '{source}'");
         }

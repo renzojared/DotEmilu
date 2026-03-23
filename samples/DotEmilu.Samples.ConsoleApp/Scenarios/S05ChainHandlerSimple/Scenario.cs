@@ -52,7 +52,7 @@ internal sealed class Scenario : IScenario
         // S06 shows that proper pattern with distinct handler classes.
         Print.Step("B", "Two links wired manually — SetSuccessor connects them");
 
-        var firstLink  = new LogChainHandler();
+        var firstLink = new LogChainHandler();
         var secondLink = new LogChainHandler();
         firstLink.SetSuccessor(secondLink);
 

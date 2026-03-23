@@ -47,7 +47,7 @@ internal sealed class Scenario : IScenario
 
             var context = new SyncJobContext
             {
-                JobId       = "JOB-001",
+                JobId = "JOB-001",
                 DataSources = ["orders-api", "inventory-db", "shipping-feed"],
             };
 
@@ -70,7 +70,7 @@ internal sealed class Scenario : IScenario
 
             var context = new SyncJobContext
             {
-                JobId       = "JOB-002",
+                JobId = "JOB-002",
                 DataSources = ["", "bad source name", "  "],
             };
 
@@ -93,7 +93,7 @@ internal sealed class Scenario : IScenario
 
             var context = new SyncJobContext
             {
-                JobId       = "JOB-003",
+                JobId = "JOB-003",
                 DataSources = ["payments-api", "bad name here", "analytics-db"],
             };
 

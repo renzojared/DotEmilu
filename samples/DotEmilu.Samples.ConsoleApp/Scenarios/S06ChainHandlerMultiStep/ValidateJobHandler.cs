@@ -36,7 +36,8 @@ internal sealed class ValidateJobHandler : ChainHandler<SyncJobContext>
             }
         }
 
-        Console.WriteLine($"  📊 [ValidateJobHandler] {chain.ValidatedItems.Count}/{chain.DataSources.Length} sources accepted.");
+        Console.WriteLine(
+            $"  📊 [ValidateJobHandler] {chain.ValidatedItems.Count}/{chain.DataSources.Length} sources accepted.");
 
         if (chain.ValidatedItems.Count == 0)
         {

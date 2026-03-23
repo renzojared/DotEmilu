@@ -39,7 +39,8 @@ internal sealed class ProcessOrderHandler(
         ProcessOrderRequest request,
         CancellationToken cancellationToken)
     {
-        Console.WriteLine($"  🔗 [ProcessOrderHandler] Orchestrating order '{request.OrderId}' for {request.CustomerEmail}…");
+        Console.WriteLine(
+            $"  🔗 [ProcessOrderHandler] Orchestrating order '{request.OrderId}' for {request.CustomerEmail}…");
 
         // ── Step 1: delegate to the validation sub-handler ───────────────────
         var validateRequest = new ValidateOrderRequest(request.OrderId, request.TotalAmount);
@@ -58,9 +59,9 @@ internal sealed class ProcessOrderHandler(
 
         // ── Step 3: produce the result only when the pipeline fully succeeds ─
         var result = new ProcessOrderResult(
-            OrderId:          request.OrderId,
+            OrderId: request.OrderId,
             ConfirmationCode: $"CONF-{Guid.NewGuid():N}"[..12].ToUpperInvariant(),
-            ProcessedAt:      DateTimeOffset.UtcNow);
+            ProcessedAt: DateTimeOffset.UtcNow);
 
         Console.WriteLine($"  ✅ [ProcessOrderHandler] Order '{request.OrderId}' processed.");
         Console.WriteLine($"     Confirmation : {result.ConfirmationCode}");

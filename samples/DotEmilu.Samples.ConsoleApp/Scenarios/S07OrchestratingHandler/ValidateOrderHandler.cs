@@ -29,7 +29,8 @@ internal sealed class ValidateOrderHandler(IVerifier<ValidateOrderRequest> verif
 
     protected override Task HandleUseCaseAsync(ValidateOrderRequest request, CancellationToken cancellationToken)
     {
-        Console.WriteLine($"  🔎 [ValidateOrderHandler] Validating order '{request.OrderId}' — Amount: {request.TotalAmount:C}");
+        Console.WriteLine(
+            $"  🔎 [ValidateOrderHandler] Validating order '{request.OrderId}' — Amount: {request.TotalAmount:C}");
 
         // Business rule: orders exceeding the threshold require manual approval and
         // cannot be auto-processed.  This check lives here rather than in a validator

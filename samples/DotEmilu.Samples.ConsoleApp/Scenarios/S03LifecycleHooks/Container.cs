@@ -11,7 +11,7 @@ internal static class Container
         var assembly = Assembly.GetExecutingAssembly();
 
         services
-            .AddValidatorsFromAssembly(assembly, includeInternalTypes:true)
+            .AddValidatorsFromAssembly(assembly, includeInternalTypes: true)
             .AddVerifier()
             .AddHandlers(assembly);
 

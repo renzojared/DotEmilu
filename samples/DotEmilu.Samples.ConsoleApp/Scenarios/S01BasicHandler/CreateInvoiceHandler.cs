@@ -11,7 +11,8 @@ internal sealed class CreateInvoiceHandler(IVerifier<CreateInvoiceRequest> verif
 {
     protected override Task HandleUseCaseAsync(CreateInvoiceRequest request, CancellationToken cancellationToken)
     {
-        Console.WriteLine($"  ✅ Invoice created: #{request.Number} | {request.Description} | ${request.Amount} | {request.Date}");
+        Console.WriteLine(
+            $"  ✅ Invoice created: #{request.Number} | {request.Description} | ${request.Amount} | {request.Date}");
         return Task.CompletedTask;
     }
 }

@@ -28,11 +28,11 @@ internal sealed class SeedDataHandler : IHandler
 {
     private static readonly (string Id, string Name, decimal Price)[] Catalogue =
     [
-        ("SKU-001", "Wireless Keyboard",  49.99m),
-        ("SKU-002", "Ergonomic Mouse",    29.99m),
-        ("SKU-003", "USB-C Hub",          39.99m),
-        ("SKU-004", "Monitor Stand",      59.99m),
-        ("SKU-005", "Webcam HD",          89.99m),
+        ("SKU-001", "Wireless Keyboard", 49.99m),
+        ("SKU-002", "Ergonomic Mouse", 29.99m),
+        ("SKU-003", "USB-C Hub", 39.99m),
+        ("SKU-004", "Monitor Stand", 59.99m),
+        ("SKU-005", "Webcam HD", 89.99m),
     ];
 
     /// <inheritdoc />

@@ -24,7 +24,8 @@ internal sealed class ProcessPaymentHandler(IVerifier<ProcessPaymentRequest> ver
             throw new InvalidOperationException(
                 $"Amount {request.Amount:C} ({request.Currency}) exceeds the processing limit of 50,000.");
 
-        Console.WriteLine($"  ✅ Payment processed: invoice {request.InvoiceId} — {request.Amount:C} {request.Currency}");
+        Console.WriteLine(
+            $"  ✅ Payment processed: invoice {request.InvoiceId} — {request.Amount:C} {request.Currency}");
         return Task.CompletedTask;
     }
 
