@@ -1,6 +1,6 @@
 using DotEmilu.EntityFrameworkCore;
-using DotEmilu.Samples.EntityFrameworkCore.DataAccess;
 using DotEmilu.Samples.Domain.Entities;
+using DotEmilu.Samples.EntityFrameworkCore.DataAccess;
 using DotEmilu.Samples.EntityFrameworkCore.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
