@@ -3,8 +3,6 @@ using DotEmilu.AspNetCore;
 using DotEmilu.EntityFrameworkCore.Extensions;
 using DotEmilu.Samples.Domain.Contracts;
 using DotEmilu.Samples.Domain.Entities;
-using DotEmilu.Samples.FullApp.Infrastructure;
-using Microsoft.AspNetCore.Mvc;
 
 namespace DotEmilu.Samples.FullApp.Features.GetInvoices;
 
@@ -27,7 +25,7 @@ public static class GetInvoices
         return builder;
     }
 
-    internal sealed class Handler(IVerifier<GetInvoicesRequest> verifier, InvoiceDbContext db)
+    internal sealed class Handler(IVerifier<GetInvoicesRequest> verifier, IInvoiceQueries db)
         : Handler<GetInvoicesRequest, PaginatedList<Invoice>>(verifier)
     {
         protected override async Task<PaginatedList<Invoice>?> HandleUseCaseAsync(

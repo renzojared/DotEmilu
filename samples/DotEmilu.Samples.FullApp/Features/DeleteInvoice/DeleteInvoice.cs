@@ -1,7 +1,6 @@
 using DotEmilu.Abstractions;
 using DotEmilu.AspNetCore;
 using DotEmilu.Samples.Domain.Contracts;
-using DotEmilu.Samples.FullApp.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,7 +30,7 @@ public static partial class DeleteInvoice
 // Handler
 public static partial class DeleteInvoice
 {
-    internal sealed class Handler(IVerifier<DeleteInvoiceRequest> verifier, InvoiceDbContext db)
+    internal sealed class Handler(IVerifier<DeleteInvoiceRequest> verifier, IInvoiceCommands db)
         : Handler<DeleteInvoiceRequest>(verifier)
     {
         private readonly IVerifier<DeleteInvoiceRequest> _verifier = verifier;

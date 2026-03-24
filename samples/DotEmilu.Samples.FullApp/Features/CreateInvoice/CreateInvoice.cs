@@ -2,7 +2,6 @@ using DotEmilu.Abstractions;
 using DotEmilu.AspNetCore;
 using DotEmilu.Samples.Domain.Contracts;
 using DotEmilu.Samples.Domain.Entities;
-using DotEmilu.Samples.FullApp.Infrastructure;
 
 namespace DotEmilu.Samples.FullApp.Features.CreateInvoice;
 
@@ -26,7 +25,7 @@ public static partial class CreateInvoice
 // Handler
 public static partial class CreateInvoice
 {
-    internal sealed class Handler(IVerifier<CreateInvoiceRequest> verifier, InvoiceDbContext db)
+    internal sealed class Handler(IVerifier<CreateInvoiceRequest> verifier, IInvoiceCommands db)
         : Handler<CreateInvoiceRequest>(verifier)
     {
         protected override async Task HandleUseCaseAsync(

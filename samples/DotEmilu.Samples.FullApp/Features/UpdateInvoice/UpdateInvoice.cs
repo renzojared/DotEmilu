@@ -1,7 +1,6 @@
 using DotEmilu.Abstractions;
 using DotEmilu.AspNetCore;
 using DotEmilu.Samples.Domain.Contracts;
-using DotEmilu.Samples.FullApp.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
 namespace DotEmilu.Samples.FullApp.Features.UpdateInvoice;
@@ -25,7 +24,7 @@ public static class UpdateInvoice
         return builder;
     }
 
-    internal sealed class Handler(IVerifier<UpdateInvoiceRequest> verifier, InvoiceDbContext db)
+    internal sealed class Handler(IVerifier<UpdateInvoiceRequest> verifier, IInvoiceCommands db)
         : Handler<UpdateInvoiceRequest>(verifier)
     {
         private readonly IVerifier<UpdateInvoiceRequest> _verifier = verifier;

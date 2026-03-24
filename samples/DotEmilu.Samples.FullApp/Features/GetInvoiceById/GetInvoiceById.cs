@@ -1,7 +1,6 @@
 using DotEmilu.Abstractions;
 using DotEmilu.AspNetCore;
 using DotEmilu.Samples.Domain.Contracts;
-using DotEmilu.Samples.FullApp.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,7 +28,7 @@ public static class GetInvoiceById
         return builder;
     }
 
-    internal sealed class Handler(IVerifier<GetInvoiceByIdRequest> verifier, InvoiceDbContext db)
+    internal sealed class Handler(IVerifier<GetInvoiceByIdRequest> verifier, IInvoiceQueries db)
         : Handler<GetInvoiceByIdRequest, InvoiceResponse>(verifier)
     {
         protected override async Task<InvoiceResponse?> HandleUseCaseAsync(
