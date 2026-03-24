@@ -14,8 +14,4 @@
         <FrameworkReference Include="Microsoft.AspNetCore.App"/>
     </ItemGroup>
 
-    <ItemGroup Label="Packaging">
-        <None Include="README.md" Pack="true" Visible="false" PackagePath="/"/>
-    </ItemGroup>
-
 </Project>
