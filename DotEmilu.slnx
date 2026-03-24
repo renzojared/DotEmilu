@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/samples/">
+    <File Path="samples\Directory.Build.props" />
     <Project Path="samples/DotEmilu.Samples.ConsoleApp/DotEmilu.Samples.ConsoleApp.csproj" />
     <Project Path="samples/DotEmilu.Samples.Domain/DotEmilu.Samples.Domain.csproj" />
     <Project Path="samples/DotEmilu.Samples.EntityFrameworkCore/DotEmilu.Samples.EntityFrameworkCore.csproj" />
@@ -9,10 +10,13 @@
     <File Path=".gitignore" />
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
     <File Path="LICENSE" />
+    <File Path="nuget.config" />
     <File Path="README.md" />
   </Folder>
   <Folder Name="/src/">
+    <File Path="src\Directory.Build.props" />
     <Project Path="src/DotEmilu.Abstractions/DotEmilu.Abstractions.csproj" />
     <Project Path="src/DotEmilu.AspNetCore/DotEmilu.AspNetCore.csproj" />
     <Project Path="src/DotEmilu.EntityFrameworkCore/DotEmilu.EntityFrameworkCore.csproj" />
@@ -20,6 +24,7 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/DotEmilu.UnitTests/DotEmilu.UnitTests.csproj" />
+    <File Path="tests\Directory.Build.props" />
     <Project Path="tests/DotEmilu.IntegrationTests/DotEmilu.IntegrationTests.csproj" />
   </Folder>
 </Solution>

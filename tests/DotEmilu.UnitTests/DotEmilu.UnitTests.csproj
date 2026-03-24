@@ -20,5 +20,4 @@
         <PackageReference Include="NSubstitute.Analyzers.CSharp"/>
     </ItemGroup>
 
-
 </Project>

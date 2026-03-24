@@ -8,4 +8,17 @@
         <NoWarn>$(NoWarn);CA1707</NoWarn>
     </PropertyGroup>
 
+    <!--
+      TEMPORARY: Packages added ONLY for Rider/xUnit v3 compatibility
+      Remove when Rider has native support for Microsoft.Testing.Platform
+      without requiring Microsoft.NET.Test.Sdk or xunit.runner.visualstudio.
+    -->
+    <ItemGroup Label="Testing (Temporary Rider Compatibility)">
+        <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="xunit.runner.visualstudio">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
 </Project>

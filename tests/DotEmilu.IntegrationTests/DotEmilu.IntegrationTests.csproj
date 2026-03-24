@@ -19,5 +19,4 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory"/>
     </ItemGroup>
 
-
 </Project>
