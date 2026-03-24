@@ -3,7 +3,7 @@
     <PropertyGroup Label="Package Metadata">
         <Title>DotEmilu Abstractions</Title>
         <Description>Abstractions for DotEmilu</Description>
-        <PackageTags>abstractions;handler;request;http;renzojared;dotemilu</PackageTags>
+        <PackageTags>abstractions;handler;request;renzojared;dotemilu</PackageTags>
     </PropertyGroup>
 
     <ItemGroup Label="Dependencies">
