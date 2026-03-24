@@ -1,20 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <OutputType>Exe</OutputType>
-        <IsPackable>false</IsPackable>
-        <IsTestProject>true</IsTestProject>
-    </PropertyGroup>
-
     <ItemGroup Label="Dependencies">
         <ProjectReference Include="..\..\src\DotEmilu.AspNetCore\DotEmilu.AspNetCore.csproj"/>
         <ProjectReference Include="..\..\src\DotEmilu.EntityFrameworkCore\DotEmilu.EntityFrameworkCore.csproj"/>
     </ItemGroup>
 
-    <ItemGroup Label="Testing">
-        <PackageReference Include="xunit.v3"/>
-        <PackageReference Include="xunit.v3.assert"/>
-        <PackageReference Include="coverlet.msbuild"/>
+    <ItemGroup Label="Testing (Web &amp; EF setup)">
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory"/>
     </ItemGroup>

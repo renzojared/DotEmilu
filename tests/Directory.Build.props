@@ -3,10 +3,18 @@
     <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))"/>
 
     <PropertyGroup>
-        <GenerateDocumentationFile>false</GenerateDocumentationFile>
+        <OutputType>Exe</OutputType>
         <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
+        <GenerateDocumentationFile>false</GenerateDocumentationFile>
         <NoWarn>$(NoWarn);CA1707</NoWarn>
     </PropertyGroup>
+
+    <ItemGroup Label="Testing (Shared Core)">
+        <PackageReference Include="xunit.v3"/>
+        <PackageReference Include="xunit.v3.assert"/>
+        <PackageReference Include="coverlet.msbuild"/>
+    </ItemGroup>
 
     <!--
       TEMPORARY: Packages added ONLY for Rider/xUnit v3 compatibility
@@ -14,7 +22,7 @@
       without requiring Microsoft.NET.Test.Sdk or xunit.runner.visualstudio.
     -->
     <ItemGroup Label="Testing (Temporary Rider Compatibility)">
-        <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk"/>
         <PackageReference Include="xunit.runner.visualstudio">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
