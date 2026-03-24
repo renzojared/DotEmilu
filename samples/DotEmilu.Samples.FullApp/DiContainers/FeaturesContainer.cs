@@ -9,5 +9,6 @@ internal static class FeaturesContainer
         => services
             .AddValidatorsFromAssembly(Assembly.GetExecutingAssembly(), includeInternalTypes: true)
             .AddVerifier()
-            .AddHandlers(Assembly.GetExecutingAssembly());
+            .AddHandlers(Assembly.GetExecutingAssembly())
+            .AddChainHandlers(Assembly.GetExecutingAssembly());
 }
