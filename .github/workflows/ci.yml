@@ -72,7 +72,7 @@ jobs:
 
       - name: Display computed version
         run: |
-          VERSION=$(dotnet msbuild src/DotEmilu/DotEmilu.csproj --no-restore -nologo -getProperty:PackageVersion)
+          VERSION=$(dotnet msbuild src/DotEmilu/DotEmilu.csproj -nologo -getProperty:PackageVersion)
           echo "MinVer computed version: $VERSION"
           echo "### MinVer version: \`$VERSION\`" >> "$GITHUB_STEP_SUMMARY"
 

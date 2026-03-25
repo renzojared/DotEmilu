@@ -71,7 +71,7 @@ jobs:
           TAG_VERSION="${GITHUB_REF_NAME#v}"
           FAILED=false
           for proj in src/*/*.csproj; do
-            COMPUTED=$(dotnet msbuild "$proj" --no-restore -nologo -getProperty:PackageVersion)
+            COMPUTED=$(dotnet msbuild "$proj" -nologo -getProperty:PackageVersion)
             if [ "$COMPUTED" != "$TAG_VERSION" ]; then
               echo "::error::$proj: MinVer computed ($COMPUTED) does not match tag ($TAG_VERSION)."
               FAILED=true
