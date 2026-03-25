@@ -2,8 +2,8 @@
 
     <PropertyGroup Label="Package Metadata">
         <Title>DotEmilu AspNetCore</Title>
-        <Description>Simple .NET library to handle http requests in AspNetCore</Description>
-        <PackageTags>aspnetcore;webapi;handler;request;http;renzojared;dotemilu</PackageTags>
+        <Description>Bridges DotEmilu handlers to ASP.NET Core Minimal APIs with Problem Details, presenters, and DI registration.</Description>
+        <PackageTags>aspnetcore;minimal-api;webapi;handler;problem-details;presenter;http;endpoint;dotnet;renzojared;dotemilu</PackageTags>
     </PropertyGroup>
 
     <ItemGroup Label="Dependencies">

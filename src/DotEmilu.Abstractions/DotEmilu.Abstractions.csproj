@@ -2,8 +2,8 @@
 
     <PropertyGroup Label="Package Metadata">
         <Title>DotEmilu Abstractions</Title>
-        <Description>Abstractions for DotEmilu</Description>
-        <PackageTags>abstractions;handler;request;renzojared;dotemilu</PackageTags>
+        <Description>Core interfaces and base classes for DotEmilu: handlers, entities with soft-delete and audit trails, pagination, and user context.</Description>
+        <PackageTags>abstractions;handler;request;verifier;entity;auditable;soft-delete;pagination;dotnet;renzojared;dotemilu</PackageTags>
     </PropertyGroup>
 
     <ItemGroup Label="Dependencies">

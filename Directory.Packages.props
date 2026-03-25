@@ -26,7 +26,6 @@
 
     <ItemGroup Label="Web">
         <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.5"/>
-        <PackageVersion Include="Swashbuckle.AspNetCore" Version="10.1.5"/>
     </ItemGroup>
 
     <ItemGroup Label="Testing">

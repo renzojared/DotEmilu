@@ -2,8 +2,8 @@
 
     <PropertyGroup Label="Package Metadata">
         <Title>DotEmilu EF Core</Title>
-        <Description>Simple .NET library to work with Entity Framework Core</Description>
-        <PackageTags>interceptor;entity;auditable;entity-framework-core;renzojared;dotemilu</PackageTags>
+        <Description>EF Core building blocks for DotEmilu: auditable interceptors, soft-delete, entity configurations with mapping strategies, and pagination extensions.</Description>
+        <PackageTags>entity-framework-core;interceptor;auditable;soft-delete;unit-of-work;pagination;mapping-strategy;cqrs;dotnet;renzojared;dotemilu</PackageTags>
     </PropertyGroup>
 
     <ItemGroup Label="Dependencies">

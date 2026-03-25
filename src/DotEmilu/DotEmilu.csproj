@@ -2,8 +2,8 @@
 
     <PropertyGroup Label="Package Metadata">
         <Title>DotEmilu</Title>
-        <Description>Simple .NET library to handle use cases</Description>
-        <PackageTags>use-case;handler;request;renzojared;dotemilu</PackageTags>
+        <Description>Handler pipeline with automatic FluentValidation, lifecycle hooks, chain-of-responsibility, and assembly-scanning DI registration.</Description>
+        <PackageTags>use-case;handler;chain-of-responsibility;validation;pipeline;fluent-validation;dependency-injection;dotnet;renzojared;dotemilu</PackageTags>
     </PropertyGroup>
 
     <ItemGroup Label="Dependencies">

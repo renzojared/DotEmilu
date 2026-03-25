@@ -14,7 +14,7 @@
     <PropertyGroup Label="Package">
         <MinVerTagPrefix>v</MinVerTagPrefix>
         <Authors>renzojared</Authors>
-        <Copyright>Copyright © DotEmilu</Copyright>
+        <Copyright>Copyright © Renzo Jared</Copyright>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <RepositoryUrl>https://github.com/renzojared/DotEmilu</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
