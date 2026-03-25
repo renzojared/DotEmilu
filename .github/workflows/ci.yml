@@ -1,0 +1,112 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'Directory.Build.props'
+      - 'Directory.Packages.props'
+      - 'global.json'
+      - 'nuget.config'
+      - '.github/workflows/ci.yml'
+  # Allows re-running CI manually from the Actions tab (useful for flaky failures)
+  workflow_dispatch:
+
+# Cancel previous runs for the same PR to save runner minutes
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+permissions: {}   # deny all by default; each job grants only what it needs
+
+jobs:
+  dependency-review:
+    name: Dependency Review
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6.0.2
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4.9.0
+
+  build-and-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6.0.2
+        with:
+          fetch-depth: 0   # MinVer needs full history to calculate version
+          filter: tree:0   # treeless clone for better performance
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5.2.0
+        with:
+          dotnet-version: '10.x'
+          cache: true       # Caches NuGet global-packages folder
+
+      - name: Restore
+        run: dotnet restore DotEmilu.slnx
+
+      - name: Build
+        run: dotnet build DotEmilu.slnx --no-restore -c Release
+
+      - name: Display computed version
+        run: |
+          VERSION=$(dotnet msbuild src/DotEmilu/DotEmilu.csproj --no-restore -nologo -getProperty:PackageVersion)
+          echo "MinVer computed version: $VERSION"
+          echo "### MinVer version: \`$VERSION\`" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Test
+        run: |
+          dotnet test --solution DotEmilu.slnx --no-build -c Release \
+            /p:CollectCoverage=true \
+            /p:CoverletOutputFormat=cobertura \
+            /p:Include="[DotEmilu*]*" \
+            /p:Exclude="[DotEmilu.*Tests*]*" \
+            /p:Threshold=${{ vars.COVERAGE_THRESHOLD || '0' }} \
+            /p:ThresholdType=line \
+            /p:ThresholdStat=Total \
+            --logger trx \
+            --results-directory ./test-results
+
+      - name: Upload test results
+        if: always()   # upload even on failure so you can inspect the report
+        uses: actions/upload-artifact@v7.0.0
+        with:
+          name: test-results
+          path: ./test-results/*.trx
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5.5.3
+        with:
+          fail_ci_if_error: false   # Don't fail CI if Codecov is unavailable
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Validate all projects are packable
+        run: |
+          for proj in src/*/*.csproj; do
+            dotnet pack "$proj" --no-build -c Release -o ./nupkgs-ci
+          done
+          echo "All src/ projects packed successfully."
