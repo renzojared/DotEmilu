@@ -19,6 +19,16 @@ dotnet restore DotEmilu.slnx
 dotnet build DotEmilu.slnx -c Release
 ```
 
+> **NuGet lock files** — Each project has a committed `packages.lock.json` that
+> freezes the exact version of every dependency (including transitive ones).
+> CI runs `dotnet restore --locked-mode`, which fails if the lock file is out of
+> sync with the project files.
+>
+> **When you change dependencies** (edit `Directory.Packages.props` or a `.csproj`),
+> run `dotnet restore DotEmilu.slnx` locally — this updates the affected
+> `packages.lock.json` files automatically. Commit both the props/csproj change
+> **and** the regenerated lock files together, otherwise CI will fail.
+
 ### Running tests
 
 ```shell
