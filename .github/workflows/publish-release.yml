@@ -51,6 +51,7 @@ jobs:
         with:
           dotnet-version: '10.x'
           cache: true
+          cache-dependency-path: '**/packages.lock.json'
 
       - name: Restore
         run: dotnet restore DotEmilu.slnx --locked-mode

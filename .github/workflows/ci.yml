@@ -61,7 +61,8 @@ jobs:
         uses: actions/setup-dotnet@v5.2.0
         with:
           dotnet-version: '10.x'
-          cache: true       # Caches NuGet global-packages folder
+          cache: true                                    # Caches NuGet global-packages folder
+          cache-dependency-path: '**/packages.lock.json' # Required: lock files are in subdirectories
 
       - name: Restore
         run: dotnet restore DotEmilu.slnx --locked-mode
