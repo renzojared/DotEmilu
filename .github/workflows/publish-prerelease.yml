@@ -77,7 +77,7 @@ jobs:
 
       - name: Upload packages as artifact
         if: ${{ env.SKIP_PUBLISH != 'true' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.0
         with:
           name: nupkgs-prerelease-${{ steps.version.outputs.VERSION }}
           path: ./nupkgs/
