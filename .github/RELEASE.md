@@ -11,7 +11,6 @@ release.
 - [Workflow architecture](#workflow-architecture)
 - [How MinVer works (your versioning system)](#how-minver-works-your-versioning-system)
 - [Distribution strategy](#distribution-strategy)
-- [Migration to v10: what was done and why](#migration-to-v10-what-was-done-and-why)
 - [What you need to do: step-by-step scenarios](#what-you-need-to-do-step-by-step-scenarios)
 - [How overwriting already-published versions is prevented](#how-overwriting-already-published-versions-is-prevented)
 - [Community files (.github)](#community-files-github)
@@ -71,18 +70,25 @@ The number at the end (`.5`, `.3`, `.N`) is the **height** — the number of
 commits between HEAD and the last tag. This is what makes every push to `main`
 generate a unique version automatically.
 
-### Real example with your repo
+### Example: version lifecycle
 
 ```
-v2.0.1                              ← tag on a specific commit
+v10.0.0                             ← stable tag on a specific commit
   │
-  ├── commit 1                      → 2.0.2-alpha.0.1
-  ├── commit 2                      → 2.0.2-alpha.0.2
+  ├── commit 1                      → 10.0.1-alpha.0.1  (auto pre-release)
+  ├── commit 2                      → 10.0.1-alpha.0.2
   ├── ...
-  └── commit 80 (current HEAD)      → 2.0.2-alpha.0.80
+  ├── commit N                      → 10.0.1-alpha.0.N
+  │
+v10.0.1                             ← next stable tag (height resets)
+  │
+  ├── commit 1                      → 10.0.2-alpha.0.1
+  └── ...
 ```
 
-Every commit after `v2.0.1` automatically gets `2.0.2-alpha.0.N` where N grows.
+After a stable tag, MinVer increments the patch and appends `alpha.0.N`. Every
+merge to `main` increments N automatically. When you create the next stable tag,
+the height resets.
 
 ### When is the version "stable"?
 
@@ -129,62 +135,6 @@ All projects under `src/` are packaged together with the same version:
 
 Projects under `tests/` and `samples/` have `<IsPackable>false</IsPackable>`
 and are never packaged.
-
----
-
-## Migration to v10: what was done and why
-
-### The problem
-
-The last tag was `v2.0.1`. Per-project tags from a previous strategy also existed
-(`ef-core-v1.0.0`, `aspnetcore-v2.0.2`, `abstractions-v2.0.0`). Without
-intervention, MinVer would calculate `2.0.2-alpha.0.N` because that is the next
-patch after `v2.0.1`.
-
-### The solution: `MinVerMinimumMajorMinor`
-
-Added in `src/Directory.Build.props`:
-
-```xml
-<MinVerMinimumMajorMinor>10.0</MinVerMinimumMajorMinor>
-```
-
-This tells MinVer: "even if the last tag is `v2.0.1`, the calculated version can
-never be less than `10.0`". The result:
-
-- No tag on HEAD → `10.0.0-alpha.0.N` (where N = commits since `v2.0.1`)
-- Tag `v10.0.0` on HEAD → `10.0.0` (stable)
-
-### Do I need to create a tag before pushing the workflows?
-
-**No.** This is the correct order:
-
-1. **Merge** your branch to `main` (includes workflows, `MinVerMinimumMajorMinor`,
-   and all `.github` files)
-2. `Publish Pre-release` triggers automatically
-3. MinVer calculates `10.0.0-alpha.0.N` → published to GitHub Packages
-4. Iterate, open PRs, merge — each merge increments the alpha version
-5. When ready: `git tag v10.0.0 && git push --tags` → NuGet.org
-
-**You do not need to create `v10.0.0` before pushing.** `MinVerMinimumMajorMinor`
-ensures the version starts from 10.0 without requiring a tag.
-
-### What happens with the old tags?
-
-Tags with different prefixes (`ef-core-v*`, `aspnetcore-v*`, `abstractions-v*`)
-are **ignored** by MinVer because your `MinVerTagPrefix` is `v`. MinVer only
-considers tags that start with `v` followed by a semver number.
-
-The tags `v1.0.0` through `v2.0.1` still exist and that is correct — they are
-part of the history. MinVer sees them but `MinVerMinimumMajorMinor=10.0` now
-"surpasses" them.
-
-### What if I later want to remove MinVerMinimumMajorMinor?
-
-Once you have the tag `v10.0.0` (or any `v10.x.x` tag), you can remove
-`MinVerMinimumMajorMinor` if you want. MinVer will already find `v10.0.0` as
-the most recent tag and calculate everything from there. But leaving it in causes
-no problems — it is just a minimum floor.
 
 ---
 
@@ -586,14 +536,8 @@ workflows per project.
 
 ### How do I know what version MinVer will calculate before pushing?
 
-You need to do a build first (MinVer runs during the build):
+Run the MinVer target directly (no full build needed):
 
 ```shell
-dotnet build src/DotEmilu/DotEmilu.csproj -c Release
-dotnet msbuild src/DotEmilu/DotEmilu.csproj --no-restore -nologo -getProperty:PackageVersion
+dotnet msbuild src/DotEmilu/DotEmilu.csproj -target:MinVer -getProperty:PackageVersion -p:Configuration=Release -nologo
 ```
-
-### What happens with the old per-project tags (`ef-core-v1.0.0`, `aspnetcore-v2.0.2`, etc.)?
-
-MinVer ignores them because the configured `MinVerTagPrefix` is `v`. It only
-considers tags that start exactly with `v` followed by a semver number.

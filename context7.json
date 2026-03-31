@@ -26,19 +26,5 @@
         "Entity Framework Core: AuditableEntityInterceptor, SoftDeleteInterceptor, BaseEntityConfiguration, BaseAuditableEntityConfiguration with MappingStrategy (TPC/TPH/TPT); extensions UseIsDeleted(), AsPaginatedListAsync(), HasFormattedComment()",
         "DI registration: AddDotEmilu() for ASP.NET Core, AddVerifier()/AddHandlers(assembly)/AddChainHandlers(assembly) for core, AddSoftDeleteInterceptor()/AddAuditableEntityInterceptors(assembly) for EF Core",
         "Samples in /samples/ are runnable examples: ConsoleApp (8 handler scenarios), EntityFrameworkCore (7 EF patterns), FullApp (complete ASP.NET Core Web API), Domain (shared contracts and entities)"
-    ],
-    "previousVersions": [
-        {
-            "tag": "v2.0.1",
-            "title": "v2.0.1"
-        },
-        {
-            "tag": "v2.0.0",
-            "title": "v2.0.0"
-        },
-        {
-            "tag": "v1.0.3",
-            "title": "v1.0.3"
-        }
     ]
 }
