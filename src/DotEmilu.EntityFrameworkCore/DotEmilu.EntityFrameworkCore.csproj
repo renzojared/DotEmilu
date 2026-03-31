@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup Label="Package Metadata">
+        <Title>DotEmilu EF Core</Title>
+        <Description>EF Core building blocks for DotEmilu: auditable interceptors, soft-delete, entity configurations with mapping strategies, and pagination extensions.</Description>
+        <PackageTags>entity-framework-core;interceptor;auditable;soft-delete;unit-of-work;pagination;mapping-strategy;cqrs;dotnet;renzojared;dotemilu</PackageTags>
+    </PropertyGroup>
+
+    <ItemGroup Label="Dependencies">
+        <ProjectReference Include="..\DotEmilu.Abstractions\DotEmilu.Abstractions.csproj"/>
+
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational"/>
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup Label="Dependencies">
+        <ProjectReference Include="..\..\src\DotEmilu.AspNetCore\DotEmilu.AspNetCore.csproj"/>
+        <ProjectReference Include="..\..\src\DotEmilu.EntityFrameworkCore\DotEmilu.EntityFrameworkCore.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup Label="Testing (Web &amp; EF setup)">
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory"/>
+    </ItemGroup>
+
+</Project>

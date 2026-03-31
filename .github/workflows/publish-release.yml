@@ -1,0 +1,264 @@
+name: Publish Release
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'          # stable:      v10.0.0
+      - 'v[0-9]+.[0-9]+.[0-9]+-*'        # pre-release: v10.0.0-beta.1
+
+# Only one release at a time — never cancel a publish in flight
+concurrency:
+  group: publish-release
+  cancel-in-progress: false
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+permissions: {}   # deny all by default; each job grants only what it needs
+
+jobs:
+  # ──────────────────────────────────────────────
+  # 1. Build, test, pack — always runs
+  # ──────────────────────────────────────────────
+  build:
+    name: Build, Test & Pack
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write       # For attest-build-provenance
+      attestations: write   # For attest-build-provenance
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6.0.2
+        with:
+          fetch-depth: 0   # MinVer needs full history to calculate version
+          filter: tree:0   # treeless clone for better performance
+
+      - name: Verify tag is on main
+        run: |
+          git fetch origin main
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "::error::Tags must point to a commit on main. Got: $GITHUB_SHA"
+            exit 1
+          fi
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5.2.0
+        with:
+          dotnet-version: '10.x'
+          cache: true
+          cache-dependency-path: '**/packages.lock.json'
+
+      - name: Restore
+        run: dotnet restore DotEmilu.slnx --locked-mode
+
+      - name: Build
+        run: dotnet build DotEmilu.slnx --no-restore -c Release
+
+      - name: Test
+        run: dotnet test --solution DotEmilu.slnx --no-build -c Release
+
+      - name: Extract version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Validate tag matches computed version
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          COMPUTED=$(dotnet msbuild src/DotEmilu/DotEmilu.csproj -target:MinVer -getProperty:PackageVersion -p:Configuration=Release -nologo)
+          if [ "$COMPUTED" != "$TAG_VERSION" ]; then
+            echo "::error::MinVer computed ($COMPUTED) does not match tag ($TAG_VERSION)."
+            echo "Make sure the tag is on the correct commit."
+            exit 1
+          fi
+
+      - name: Pack
+        run: |
+          for proj in src/*/*.csproj; do
+            dotnet pack "$proj" --no-build -c Release -o ./nupkgs
+          done
+
+      - name: Validate packages
+        run: |
+          for pkg in ./nupkgs/*.nupkg; do
+            echo "Validating $pkg..."
+            unzip -t "$pkg" > /dev/null 2>&1 || { echo "::error::$pkg is not a valid zip/nupkg."; exit 1; }
+            if ! unzip -l "$pkg" | grep -qE "\.dll$"; then
+              echo "::error::$pkg contains no .dll files — package may be empty."
+              exit 1
+            fi
+          done
+          echo "All packages validated."
+
+      - name: Upload packages
+        uses: actions/upload-artifact@v7.0.0
+        with:
+          name: nupkgs
+          path: ./nupkgs/
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@v4.1.0
+        with:
+          subject-path: './nupkgs/*.nupkg'
+
+    outputs:
+      version: ${{ steps.version.outputs.VERSION }}
+
+  # ──────────────────────────────────────────────
+  # 2a. Stable → NuGet.org  (Trusted Publishing)
+  # ──────────────────────────────────────────────
+  push-nuget:
+    name: Push to NuGet.org
+    needs: build
+    if: ${{ !contains(needs.build.outputs.version, '-') }}
+    runs-on: ubuntu-latest
+
+    # Ties this job to the GitHub Environment configured on NuGet.org as a
+    # trusted publisher. No NUGET_API_KEY secret needed — authentication is
+    # done via a short-lived OIDC token scoped to this exact workflow run.
+    environment: nuget-org
+
+    permissions:
+      id-token: write    # Request the OIDC JWT used by NuGet Trusted Publishing
+
+    steps:
+      - name: Download packages
+        uses: actions/download-artifact@v8.0.1
+        with:
+          name: nupkgs
+          path: ./nupkgs
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5.2.0
+        with:
+          dotnet-version: '10.x'
+
+      - name: Get NuGet token (Trusted Publishing)
+        id: nuget-token
+        # How this works:
+        # 1. GitHub issues a short-lived OIDC JWT unique to this workflow run.
+        # 2. NuGet.org verifies the JWT against the trusted publisher config
+        #    (owner=renzojared, repo=DotEmilu, workflow=publish-release.yml,
+        #     environment=nuget-org) that you set up in your NuGet account.
+        # 3. NuGet returns a scoped, single-use API key valid only for this run.
+        # 4. The key is masked so it never appears in logs.
+        #
+        # Setup on NuGet.org (one-time):
+        #   Account → API Keys → Add new key → Type: Trusted Publisher
+        #   → GitHub Actions → owner: renzojared, repo: DotEmilu,
+        #     workflow: publish-release.yml, environment: nuget-org
+        run: |
+          OIDC_TOKEN=$(curl -sS \
+            -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=api://AzureADTokenExchange" \
+            | jq -r '.value')
+
+          echo "::add-mask::$OIDC_TOKEN"
+
+          API_KEY=$(curl -sS -X POST \
+            "https://www.nuget.org/api/v2/publish/trustedpublisher/oidc" \
+            -H "Content-Type: application/json" \
+            -d "{\"oidcToken\": \"$OIDC_TOKEN\"}" \
+            | jq -r '.apiKey')
+
+          echo "::add-mask::$API_KEY"
+          echo "NUGET_API_KEY=$API_KEY" >> "$GITHUB_ENV"
+
+      - name: Push .nupkg to NuGet.org
+        run: |
+          dotnet nuget push "./nupkgs/*.nupkg" \
+            --source "https://api.nuget.org/v3/index.json" \
+            --api-key "$NUGET_API_KEY" \
+            --skip-duplicate
+
+      - name: Push .snupkg to NuGet.org
+        run: |
+          dotnet nuget push "./nupkgs/*.snupkg" \
+            --source "https://api.nuget.org/v3/index.json" \
+            --api-key "$NUGET_API_KEY" \
+            --skip-duplicate
+
+  # ──────────────────────────────────────────────
+  # 2b. Pre-release → GitHub Packages
+  # ──────────────────────────────────────────────
+  push-github-packages:
+    name: Push to GitHub Packages
+    needs: build
+    if: ${{ contains(needs.build.outputs.version, '-') }}
+    runs-on: ubuntu-latest
+
+    permissions:
+      packages: write
+
+    steps:
+      - name: Download packages
+        uses: actions/download-artifact@v8.0.1
+        with:
+          name: nupkgs
+          path: ./nupkgs
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5.2.0
+        with:
+          dotnet-version: '10.x'
+
+      - name: Push to GitHub Packages
+        run: |
+          dotnet nuget push "./nupkgs/*.nupkg" \
+            --source "https://nuget.pkg.github.com/renzojared/index.json" \
+            --api-key ${{ secrets.GITHUB_TOKEN }} \
+            --skip-duplicate
+
+  # ──────────────────────────────────────────────
+  # 3. GitHub Release — runs after build (and after NuGet push for stable)
+  # ──────────────────────────────────────────────
+  github-release:
+    name: Create GitHub Release
+    needs: [build, push-nuget, push-github-packages]
+    # Waits for whichever push job ran (the other is always skipped).
+    # Stable:      push-nuget must succeed,        push-github-packages is skipped.
+    # Pre-release: push-github-packages must succeed, push-nuget is skipped.
+    if: ${{ always() && needs.build.result == 'success' && (needs.push-nuget.result == 'success' || needs.push-nuget.result == 'skipped') && (needs.push-github-packages.result == 'success' || needs.push-github-packages.result == 'skipped') }}
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download packages
+        uses: actions/download-artifact@v8.0.1
+        with:
+          name: nupkgs
+          path: ./nupkgs
+
+      - name: Build release body
+        run: |
+          VERSION="${{ needs.build.outputs.version }}"
+          {
+            echo "## Installation"
+            echo ""
+            echo '```shell'
+            for pkg in ./nupkgs/*.nupkg; do
+              NAME=$(basename "$pkg")
+              PKG_ID="${NAME%.${VERSION}.nupkg}"
+              echo "dotnet add package ${PKG_ID} --version ${VERSION}"
+            done
+            echo '```'
+            echo ""
+            echo "📦 [NuGet.org packages](https://www.nuget.org/profiles/renzojared)"
+          } > release_body.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2.6.1
+        with:
+          tag_name: ${{ github.ref_name }}
+          generate_release_notes: true
+          prerelease: ${{ contains(needs.build.outputs.version, '-') }}
+          body_path: release_body.md
+          files: ./nupkgs/*.nupkg

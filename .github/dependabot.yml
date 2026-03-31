@@ -1,0 +1,35 @@
+version: 2
+
+updates:
+  # Keep GitHub Actions pinned to latest minor/patch
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    commit-message:
+      prefix: "ci"
+    labels: [ "dependencies", "ci" ]
+    open-pull-requests-limit: 5
+
+  # Keep NuGet packages up to date
+  - package-ecosystem: "nuget"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    commit-message:
+      prefix: "deps"
+    labels: [ "dependencies", "nuget" ]
+    open-pull-requests-limit: 10
+    groups:
+      # Group minor/patch updates to reduce PR noise; major updates remain individual PRs
+      ef-core:
+        patterns: [ "Microsoft.EntityFrameworkCore*" ]
+        update-types: [ "minor", "patch" ]
+      aspnetcore:
+        patterns: [ "Microsoft.AspNetCore*" ]
+        update-types: [ "minor", "patch" ]
+      testing:
+        patterns: [ "xunit*", "coverlet*", "NSubstitute*", "Microsoft.NET.Test.Sdk" ]
+        update-types: [ "minor", "patch" ]

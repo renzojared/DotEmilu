@@ -1,0 +1,52 @@
+---
+name: Feature Request
+description: Suggest an idea or improvement
+title: "[Feature]: "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        We appreciate feature requests! Please describe your idea below.
+
+  - type: input
+    id: package
+    attributes:
+      label: Package
+      description: Which package does this relate to? (or "new package" / "general")
+      placeholder: "e.g. DotEmilu.AspNetCore"
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem statement
+      description: What problem does this feature solve? What use case does it enable?
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: Describe the API or behavior you'd like to see.
+      render: csharp
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Other approaches you've thought about or workarounds you currently use.
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Related issues, links, diagrams, etc.
+    validations:
+      required: false

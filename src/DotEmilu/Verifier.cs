@@ -1,12 +1,21 @@
 namespace DotEmilu;
 
+/// <summary>
+/// Internal implementation of <see cref="IVerifier{TRequest}"/> that aggregates multiple validators.
+/// </summary>
+/// <typeparam name="TRequest">The type of the request to validate.</typeparam>
 internal sealed class Verifier<TRequest>(IEnumerable<IValidator<TRequest>> validators) : IVerifier<TRequest>
     where TRequest : IBaseRequest
 {
-    private readonly List<ValidationFailure> _errors = [];
-    public IReadOnlyCollection<ValidationFailure> Errors => _errors;
-    public bool IsValid => Errors.Count == 0;
+    private readonly List<ValidationFailure> _validationErrors = [];
 
+    /// <inheritdoc />
+    public IReadOnlyCollection<ValidationFailure> ValidationErrors => _validationErrors;
+
+    /// <inheritdoc />
+    public bool IsValid => ValidationErrors.Count == 0;
+
+    /// <inheritdoc />
     public async Task ValidateAsync(TRequest request, CancellationToken cancellationToken)
     {
         if (validators.Any())
@@ -14,18 +23,21 @@ internal sealed class Verifier<TRequest>(IEnumerable<IValidator<TRequest>> valid
             var validationResults =
                 await Task.WhenAll(validators.Select(v => v.ValidateAsync(request, cancellationToken)));
 
-            _errors.AddRange(validationResults
+            _validationErrors.AddRange(validationResults
                 .Where(e => e.Errors.Count != 0)
                 .SelectMany(r => r.Errors));
         }
     }
 
-    public void AddErrors(in List<ValidationFailure> errors)
-        => _errors.AddRange(errors);
+    /// <inheritdoc />
+    public void AddValidationErrors(in List<ValidationFailure> validationErrors)
+        => _validationErrors.AddRange(validationErrors);
 
-    public void AddError(in ValidationFailure error)
-        => _errors.Add(error);
+    /// <inheritdoc />
+    public void AddValidationError(in ValidationFailure validationError)
+        => _validationErrors.Add(validationError);
 
-    public void AddError(in string propertyName, in string errorMessage)
-        => _errors.Add(new ValidationFailure(propertyName, errorMessage));
+    /// <inheritdoc />
+    public void AddValidationError(in string propertyName, in string errorMessage)
+        => _validationErrors.Add(new ValidationFailure(propertyName, errorMessage));
 }

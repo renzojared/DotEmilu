@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup Label="Dependencies">
+        <ProjectReference Include="..\..\src\DotEmilu\DotEmilu.csproj"/>
+        <ProjectReference Include="..\..\src\DotEmilu.AspNetCore\DotEmilu.AspNetCore.csproj"/>
+        <ProjectReference Include="..\..\src\DotEmilu.EntityFrameworkCore\DotEmilu.EntityFrameworkCore.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup Label="Testing (Mocks)">
+        <PackageReference Include="NSubstitute"/>
+        <PackageReference Include="NSubstitute.Analyzers.CSharp"/>
+    </ItemGroup>
+
+</Project>
