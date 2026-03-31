@@ -11,9 +11,8 @@
     </PropertyGroup>
 
     <ItemGroup Label="Testing (Shared Core)">
-        <PackageReference Include="xunit.v3"/>
-        <PackageReference Include="xunit.v3.assert"/>
-        <PackageReference Include="coverlet.msbuild"/>
+        <PackageReference Include="xunit.v3.mtp-v2"/>
+        <PackageReference Include="coverlet.MTP"/>
     </ItemGroup>
 
     <!--
