@@ -335,16 +335,8 @@ If `CODECOV_TOKEN` is not configured, the upload is skipped silently
 4. In your repo: **Settings → Secrets and variables → Actions → New secret**
    - Name: `CODECOV_TOKEN`, Value: the token
 
-### Coverage threshold
-
-CI enforces a minimum line coverage percentage via a **repository variable**
-(not a secret). If the variable is not set, the threshold defaults to `0`
-(no gate).
-
-**To set a threshold:**
-
-1. Go to **Settings → Secrets and variables → Actions → Variables**
-2. Create variable `COVERAGE_THRESHOLD` with a numeric value, e.g. `80`
+Coverage thresholds are configured in [`codecov.yml`](../codecov.yml) (project
+target, patch target, and flag settings). No repository variables are needed.
 
 ---
 

@@ -3,7 +3,7 @@
 A .NET 10 library ecosystem for building **use-case-driven applications** with validation-first handler pipelines, chain-of-responsibility workflows, ASP.NET Core Minimal API integration, and Entity Framework Core utilities.
 
 [![NuGet](https://img.shields.io/nuget/v/DotEmilu.svg)](https://www.nuget.org/packages/DotEmilu)
-[![codecov](https://codecov.io/gh/renzojared/DotEmilu/graph/badge.svg)](https://codecov.io/gh/renzojared/DotEmilu)
+[![codecov](https://codecov.io/gh/renzojared/DotEmilu/graph/badge.svg?token=10VJ0H5X5S)](https://codecov.io/gh/renzojared/DotEmilu)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 ## Packages
