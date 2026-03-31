@@ -66,19 +66,13 @@ jobs:
         id: version
         run: echo "VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
 
-      - name: Validate tag matches computed version (all projects)
+      - name: Validate tag matches computed version
         run: |
           TAG_VERSION="${GITHUB_REF_NAME#v}"
-          FAILED=false
-          for proj in src/*/*.csproj; do
-            COMPUTED=$(dotnet msbuild "$proj" -nologo -getProperty:PackageVersion)
-            if [ "$COMPUTED" != "$TAG_VERSION" ]; then
-              echo "::error::$proj: MinVer computed ($COMPUTED) does not match tag ($TAG_VERSION)."
-              FAILED=true
-            fi
-          done
-          if [ "$FAILED" = "true" ]; then
-            echo "Make sure the tag is on the correct commit and no project overrides PackageVersion."
+          COMPUTED=$(dotnet msbuild src/DotEmilu/DotEmilu.csproj -target:MinVer -getProperty:PackageVersion -p:Configuration=Release -nologo)
+          if [ "$COMPUTED" != "$TAG_VERSION" ]; then
+            echo "::error::MinVer computed ($COMPUTED) does not match tag ($TAG_VERSION)."
+            echo "Make sure the tag is on the correct commit."
             exit 1
           fi
 

@@ -58,8 +58,9 @@ jobs:
 
       - name: Extract computed package version
         id: version
-        # MinVer sets PackageVersion during build — extract it from the already-built output
-        run: echo "VERSION=$(dotnet msbuild src/DotEmilu/DotEmilu.csproj -nologo -getProperty:PackageVersion)" >> "$GITHUB_OUTPUT"
+        run: |
+          VERSION=$(dotnet msbuild src/DotEmilu/DotEmilu.csproj -target:MinVer -getProperty:PackageVersion -p:Configuration=Release -nologo)
+          echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Verify version is pre-release
         if: ${{ !contains(steps.version.outputs.VERSION, '-') }}
