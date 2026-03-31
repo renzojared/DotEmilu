@@ -1,0 +1,32 @@
+codecov:
+  require_ci_to_pass: true
+  notify:
+    after_n_builds: 2     # Wait for both unit + integration uploads before sending status
+
+coverage:
+  status:
+    project:
+      default:
+        target: auto      # Don't decrease from base commit coverage
+        threshold: 2%     # Allow up to 2% decrease before failing
+    patch:
+      default:
+        target: 80%       # New/modified code must have ≥80% coverage
+
+comment:
+  layout: "reach, diff, flags, files"
+  behavior: default
+
+ignore:
+  - "samples/**"
+  - "tests/**"
+
+flags:
+  unittests:
+    paths:
+      - "src/"
+    carryforward: true
+  integrationtests:
+    paths:
+      - "src/"
+    carryforward: true

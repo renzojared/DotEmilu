@@ -3,6 +3,7 @@
 A .NET 10 library ecosystem for building **use-case-driven applications** with validation-first handler pipelines, chain-of-responsibility workflows, ASP.NET Core Minimal API integration, and Entity Framework Core utilities.
 
 [![NuGet](https://img.shields.io/nuget/v/DotEmilu.svg)](https://www.nuget.org/packages/DotEmilu)
+[![codecov](https://codecov.io/gh/renzojared/DotEmilu/graph/badge.svg)](https://codecov.io/gh/renzojared/DotEmilu)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 ## Packages
@@ -47,7 +48,8 @@ DotEmilu/
     ├── getting-started.md
     └── guides/
         ├── handler-patterns.md
-        └── entity-framework-core-patterns.md
+        ├── entity-framework-core-patterns.md
+        └── coverage-configuration.md
 ```
 
 ## Quick start
@@ -161,6 +163,7 @@ For detailed patterns and advanced usage, see the full documentation:
 - [Getting started](docs/getting-started.md) — prerequisites, installation options, step-by-step tutorials
 - [Handler patterns](docs/guides/handler-patterns.md) — all handler types, lifecycle hooks, chain-of-responsibility, orchestrating handlers
 - [Entity Framework Core patterns](docs/guides/entity-framework-core-patterns.md) — auditable entities, soft delete, CQRS, pagination, mapping strategies
+- [Coverage configuration](docs/guides/coverage-configuration.md) — coverlet.MTP CLI flags, codecov.yml settings, CI pipeline coverage setup
 
 ## Samples
 

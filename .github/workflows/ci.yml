@@ -79,18 +79,29 @@ jobs:
       - name: Test
         run: |
           dotnet test --solution DotEmilu.slnx --no-build -c Release \
-            /p:CollectCoverage=true \
-            /p:CoverletOutputFormat=cobertura \
-            /p:Include="[DotEmilu*]*" \
-            /p:Exclude="[DotEmilu.*Tests*]*" \
-            /p:Threshold=${{ vars.COVERAGE_THRESHOLD || '0' }} \
-            /p:ThresholdType=line \
-            /p:ThresholdStat=Total
+            --coverlet \
+            --coverlet-output-format cobertura \
+            --coverlet-include "[DotEmilu*]*" \
+            --coverlet-exclude "[DotEmilu.*Tests*]*" \
+            --coverlet-exclude "[DotEmilu.Samples*]*" \
+            --coverlet-exclude-by-attribute "GeneratedCodeAttribute" \
+            --coverlet-skip-auto-props
 
-      - name: Upload coverage to Codecov
+      - name: Upload unit test coverage
         uses: codecov/codecov-action@v5.5.3
         with:
-          fail_ci_if_error: false   # Don't fail CI if Codecov is unavailable
+          directory: tests/DotEmilu.UnitTests/
+          flags: unittests
+          fail_ci_if_error: false
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Upload integration test coverage
+        uses: codecov/codecov-action@v5.5.3
+        with:
+          directory: tests/DotEmilu.IntegrationTests/
+          flags: integrationtests
+          fail_ci_if_error: false
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
