@@ -34,13 +34,27 @@ release.
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-### Three workflows
+### Workflow files
 
 | Workflow | Trigger | What it does | Destination |
 |---|---|---|---|
-| **CI** | PR to `main` (with relevant changes) | Dependency Review + Build + Test + Coverage (Codecov) + Pack validation | None (validation only) |
-| **Publish Pre-release** | Push/merge to `main` (with relevant changes) | Build + Test + Pack + Push | GitHub Packages |
+| **Build & Test** | Called by CI and Publish Pre-release | Build + Test + Coverage (Codecov) + Pack + Upload artifact | Internal (reusable workflow) |
+| **CI** | PR to `main` (with code/test/build changes) | Dependency Review + Build & Test | None (validation only) |
+| **Publish Pre-release** | Push/merge to `main` (with package-impacting changes) | Build & Test + Push `.nupkg` | GitHub Packages |
 | **Publish Release** | Push of tag `v*` | Build + Test + Pack + Attest provenance + Push + GitHub Release | NuGet.org (stable) or GitHub Packages (pre-release) |
+
+`Build & Test` is a [reusable workflow](https://docs.github.com/en/actions/sharing-automations/reusing-workflows)
+that eliminates duplication. It builds, tests with coverage, packs all projects,
+uploads packages as an artifact, and exports the computed version as an output.
+Downstream jobs only need to download the artifact and push — no redundant builds.
+
+CI triggers on `src/**`, `tests/**`, and build config files.
+Publish Pre-release triggers on `src/**`, `assets/icon.jpg`, and build config
+files — but **not** `tests/**`, because test-only changes do not affect the
+package binary.
+
+> **Symbol packages (`.snupkg`):** Only NuGet.org supports `.snupkg`. GitHub
+> Packages does not. Symbol packages are published only during stable releases.
 
 ---
 
@@ -153,15 +167,18 @@ git add . && git commit -m "feat: add batch handler support"
 git push -u origin feature/add-new-handler
 # → On GitHub, open the PR to main
 
-# 4. CI runs automatically (build + test)
+# 4. CI runs automatically (build + test + coverage)
 #    If it passes, you can merge
 
-# 5. On merge/push to main → pre-release is published automatically
+# 5. On merge/push to main:
+#    - If your merge changed src/ or build config → pre-release is published
+#    - If your merge only changed tests/ → no package is published
 #    Version: 10.0.0-alpha.0.81 (example)
 #    Destination: GitHub Packages
 ```
 
-**You do not need to do anything else.** The pre-release publishes itself.
+**You do not need to do anything else.** The pre-release publishes itself when
+package-impacting files change.
 
 ### Scenario 2: Publish a stable release
 
@@ -323,17 +340,17 @@ No additional setup required for GitHub Packages.
 
 ### Codecov — code coverage reporting
 
-CI uploads coverage reports to [Codecov](https://codecov.io) after every PR.
-If `CODECOV_TOKEN` is not configured, the upload is skipped silently
-(`fail_ci_if_error: false`) — CI will still pass.
+Coverage reports are uploaded to [Codecov](https://codecov.io) from the
+`build-and-test.yml` reusable workflow, which is called by both **CI** and
+**Publish Pre-release**.
 
-**One-time setup:**
+Both workflows use `fail_ci_if_error: false`, so a Codecov outage will never
+block builds or publications.
 
-1. Go to https://codecov.io and log in with GitHub
-2. Add the `DotEmilu` repository
-3. Copy the upload token
-4. In your repo: **Settings → Secrets and variables → Actions → New secret**
-   - Name: `CODECOV_TOKEN`, Value: the token
+`CODECOV_TOKEN` is optional when your Codecov organization allows tokenless
+uploads for public repositories. If token authentication is required in the
+future, create a repo secret named `CODECOV_TOKEN` and both workflows will
+use it automatically.
 
 Coverage thresholds are configured in [`codecov.yml`](../codecov.yml) (project
 target, patch target, and flag settings). No repository variables are needed.
@@ -510,11 +527,14 @@ Only `CI` has `workflow_dispatch`. The publish workflows trigger exclusively fro
 their defined triggers (push to main / push of tag). This is intentional to
 prevent accidental publications.
 
-### What happens if a merge to main does not change files in `src/`?
+### What happens if a merge to main only changes tests?
 
-`Publish Pre-release` does not trigger. Only changes in `src/**`, `tests/**`,
-`Directory.Build.props`, `Directory.Packages.props`, `global.json`, `nuget.config`,
-or the workflow file itself activate publishing.
+`Publish Pre-release` does not trigger. Test-only changes do not affect the
+package binary. CI already validated the tests during the PR.
+
+Only changes in `src/**`, `assets/icon.jpg`, `Directory.Build.props`,
+`Directory.Packages.props`, `global.json`, `nuget.config`, or the workflow
+files themselves activate pre-release publishing.
 
 ### Can I have different versions per project?
 
