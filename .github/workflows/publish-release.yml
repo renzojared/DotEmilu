@@ -270,7 +270,7 @@ jobs:
         id: prev-tag
         if: ${{ !contains(needs.build.outputs.version, '-') }}
         run: |
-          # Solo busca si es un release estable. Encuentra la última versión cronológica que NO sea pre-release.
+          # Only run for stable releases. Find the latest chronological version that is NOT a pre-release.
           PREVIOUS_TAG=$(git tag --sort=-creatordate | grep -v "^${{ github.ref_name }}$" | grep -iE -v '-(rc|beta|alpha|preview|pre)' | head -n 1)
           echo "PREVIOUS_TAG=$PREVIOUS_TAG" >> "$GITHUB_OUTPUT"
           echo "Determined previous stable tag: $PREVIOUS_TAG"
