@@ -41,5 +41,7 @@ jobs:
 
   build-and-test:
     name: Build & Test
+    permissions:
+      contents: read
     uses: ./.github/workflows/build-and-test.yml
     secrets: inherit

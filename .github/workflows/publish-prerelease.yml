@@ -23,6 +23,8 @@ permissions: {}   # deny all by default; each job grants only what it needs
 jobs:
   build-and-test:
     name: Build & Test
+    permissions:
+      contents: read
     uses: ./.github/workflows/build-and-test.yml
     secrets: inherit
 
