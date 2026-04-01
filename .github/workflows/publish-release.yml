@@ -231,6 +231,12 @@ jobs:
       contents: write
 
     steps:
+      - name: Checkout repository (for tag calculations)
+        uses: actions/checkout@v6.0.2
+        if: ${{ !contains(needs.build.outputs.version, '-') }}
+        with:
+          fetch-depth: 0
+
       - name: Download packages
         uses: actions/download-artifact@v8.0.1
         with:
@@ -260,11 +266,28 @@ jobs:
             echo "$PACKAGE_REGISTRY_TEXT"
           } > release_body.md
 
+      - name: Determine Previous Stable Tag
+        id: prev-tag
+        if: ${{ !contains(needs.build.outputs.version, '-') }}
+        run: |
+          # Solo busca si es un release estable. Encuentra la última versión cronológica que NO sea pre-release.
+          PREVIOUS_TAG=$(git tag --sort=-creatordate | grep -v "^${{ github.ref_name }}$" | grep -iE -v '-(rc|beta|alpha|preview|pre)' | head -n 1)
+          echo "PREVIOUS_TAG=$PREVIOUS_TAG" >> "$GITHUB_OUTPUT"
+          echo "Determined previous stable tag: $PREVIOUS_TAG"
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2.6.1
         with:
           tag_name: ${{ github.ref_name }}
           generate_release_notes: true
+          previous_tag: ${{ steps.prev-tag.outputs.PREVIOUS_TAG }}
+          draft: true
           prerelease: ${{ contains(needs.build.outputs.version, '-') }}
           body_path: release_body.md
           files: ./nupkgs/*.nupkg
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2.6.1
+        with:
+          tag_name: ${{ github.ref_name }}
+          prerelease: ${{ contains(needs.build.outputs.version, '-') }}
