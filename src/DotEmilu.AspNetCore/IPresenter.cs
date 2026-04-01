@@ -6,6 +6,7 @@ namespace DotEmilu.AspNetCore;
 public interface IPresenter
 {
     /// <summary>Creates a successful HTTP result with the provided response payload.</summary>
+    /// <remarks>The default implementation returns HTTP 200 (OK).</remarks>
     /// <typeparam name="TResponse">The type of the response.</typeparam>
     /// <param name="response">The response payload.</param>
     /// <returns>An HTTP result representing success.</returns>

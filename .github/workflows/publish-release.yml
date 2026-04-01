@@ -222,7 +222,7 @@ jobs:
     name: Create GitHub Release
     needs: [build, push-nuget, push-github-packages]
     # Waits for whichever push job ran (the other is always skipped).
-    # Stable:      push-nuget must succeed,        push-github-packages is skipped.
+    # Stable:      push-nuget must succeed, push-github-packages is skipped.
     # Pre-release: push-github-packages must succeed, push-nuget is skipped.
     if: ${{ always() && needs.build.result == 'success' && (needs.push-nuget.result == 'success' || needs.push-nuget.result == 'skipped') && (needs.push-github-packages.result == 'success' || needs.push-github-packages.result == 'skipped') }}
     runs-on: ubuntu-latest
@@ -240,6 +240,12 @@ jobs:
       - name: Build release body
         run: |
           VERSION="${{ needs.build.outputs.version }}"
+          if echo "$VERSION" | grep -q '-'; then
+            PACKAGE_REGISTRY_TEXT="📦 [GitHub Packages](https://github.com/renzojared/DotEmilu/packages)"
+          else
+            PACKAGE_REGISTRY_TEXT="📦 [NuGet.org packages](https://www.nuget.org/profiles/renzojared)"
+          fi
+
           {
             echo "## Installation"
             echo ""
@@ -251,7 +257,7 @@ jobs:
             done
             echo '```'
             echo ""
-            echo "📦 [NuGet.org packages](https://www.nuget.org/profiles/renzojared)"
+            echo "$PACKAGE_REGISTRY_TEXT"
           } > release_body.md
 
       - name: Create GitHub Release

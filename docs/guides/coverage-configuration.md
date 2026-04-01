@@ -7,7 +7,7 @@ Personal reference for coverage tooling decisions in DotEmilu.
 | Tool | Package | Role |
 |---|---|---|
 | coverlet.MTP | `coverlet.MTP 8.0.1` | Code coverage collection (MTP-native) |
-| Codecov | `codecov/codecov-action@v5` | Upload, threshold enforcement, PR comments |
+| Codecov | `codecov/codecov-action@v6.0.0` | Upload, threshold enforcement, PR comments |
 | codecov.yml | repo root | Codecov server-side config |
 
 ## coverlet.MTP CLI Options
@@ -68,7 +68,10 @@ Personal reference for coverage tooling decisions in DotEmilu.
 | `parsers` | Auto-detection works for Cobertura |
 | `fixes` | No path mapping needed |
 
-## Codecov Action (CI Workflow)
+## Codecov Action (Build & Test reusable workflow)
+
+Coverage is uploaded from the `build-and-test.yml` reusable workflow, which is
+called by both **CI** (PR validation) and **Publish Pre-release** (main branch).
 
 ### Used
 

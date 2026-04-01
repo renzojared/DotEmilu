@@ -11,6 +11,7 @@ on:
       - 'global.json'
       - 'nuget.config'
       - '.github/workflows/ci.yml'
+      - '.github/workflows/build-and-test.yml'
   # Allows re-running CI manually from the Actions tab (useful for flaky failures)
   workflow_dispatch:
 
@@ -18,11 +19,6 @@ on:
 concurrency:
   group: ci-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
-
-env:
-  DOTNET_NOLOGO: true
-  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-  DOTNET_CLI_TELEMETRY_OPTOUT: true
 
 permissions: {}   # deny all by default; each job grants only what it needs
 
@@ -45,69 +41,7 @@ jobs:
 
   build-and-test:
     name: Build & Test
-    runs-on: ubuntu-latest
-
     permissions:
       contents: read
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6.0.2
-        with:
-          fetch-depth: 0   # MinVer needs full history to calculate version
-          filter: tree:0   # treeless clone for better performance
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v5.2.0
-        with:
-          dotnet-version: '10.x'
-          cache: true                                    # Caches NuGet global-packages folder
-          cache-dependency-path: '**/packages.lock.json' # Required: lock files are in subdirectories
-
-      - name: Restore
-        run: dotnet restore DotEmilu.slnx --locked-mode
-
-      - name: Build
-        run: dotnet build DotEmilu.slnx --no-restore -c Release
-
-      - name: Display computed version
-        run: |
-          VERSION=$(dotnet msbuild src/DotEmilu/DotEmilu.csproj -target:MinVer -getProperty:PackageVersion -p:Configuration=Release -nologo)
-          echo "MinVer computed version: $VERSION"
-          echo "### MinVer version: \`$VERSION\`" >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Test
-        run: |
-          dotnet test --solution DotEmilu.slnx --no-build -c Release \
-            --coverlet \
-            --coverlet-output-format cobertura \
-            --coverlet-include "[DotEmilu*]*" \
-            --coverlet-exclude "[DotEmilu.*Tests*]*" \
-            --coverlet-exclude "[DotEmilu.Samples*]*" \
-            --coverlet-exclude-by-attribute "GeneratedCodeAttribute" \
-            --coverlet-skip-auto-props
-
-      - name: Upload unit test coverage
-        uses: codecov/codecov-action@v6.0.0
-        with:
-          directory: tests/DotEmilu.UnitTests/
-          flags: unittests
-          fail_ci_if_error: false
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
-      - name: Upload integration test coverage
-        uses: codecov/codecov-action@v6.0.0
-        with:
-          directory: tests/DotEmilu.IntegrationTests/
-          flags: integrationtests
-          fail_ci_if_error: false
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
-      - name: Validate all projects are packable
-        run: |
-          for proj in src/*/*.csproj; do
-            dotnet pack "$proj" --no-build -c Release -o ./nupkgs-ci
-          done
-          echo "All src/ projects packed successfully."
+    uses: ./.github/workflows/build-and-test.yml
+    secrets: inherit

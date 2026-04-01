@@ -5,85 +5,57 @@ on:
     branches: [ main ]
     paths:
       - 'src/**'
-      - 'tests/**'
+      - 'assets/icon.jpg'
       - 'Directory.Build.props'
       - 'Directory.Packages.props'
       - 'global.json'
       - 'nuget.config'
       - '.github/workflows/publish-prerelease.yml'
+      - '.github/workflows/build-and-test.yml'
 
 # Only one pre-release pipeline per branch at a time
 concurrency:
   group: publish-prerelease-${{ github.ref }}
   cancel-in-progress: false   # Let the running publish finish; queue the next
 
-env:
-  DOTNET_NOLOGO: true
-  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-  DOTNET_CLI_TELEMETRY_OPTOUT: true
-
 permissions: {}   # deny all by default; each job grants only what it needs
 
 jobs:
-  publish-prerelease:
-    name: Pack & Push to GitHub Packages
+  build-and-test:
+    name: Build & Test
+    permissions:
+      contents: read
+    uses: ./.github/workflows/build-and-test.yml
+    secrets: inherit
+
+  publish:
+    name: Push to GitHub Packages
+    needs: build-and-test
     runs-on: ubuntu-latest
 
     permissions:
-      contents: read
       packages: write
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6.0.2
-        with:
-          fetch-depth: 0   # MinVer needs full history to calculate version
-          filter: tree:0   # treeless clone for better performance
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v5.2.0
-        with:
-          dotnet-version: '10.x'
-          cache: true
-          cache-dependency-path: '**/packages.lock.json'
-
-      - name: Restore
-        run: dotnet restore DotEmilu.slnx --locked-mode
-
-      - name: Build
-        run: dotnet build DotEmilu.slnx --no-restore -c Release
-
-      - name: Test
-        run: dotnet test --solution DotEmilu.slnx --no-build -c Release
-
-      - name: Extract computed package version
-        id: version
-        run: |
-          VERSION=$(dotnet msbuild src/DotEmilu/DotEmilu.csproj -target:MinVer -getProperty:PackageVersion -p:Configuration=Release -nologo)
-          echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
-
       - name: Verify version is pre-release
-        if: ${{ !contains(steps.version.outputs.VERSION, '-') }}
+        if: ${{ !contains(needs.build-and-test.outputs.version, '-') }}
         run: |
-          echo "::notice::Version ${{ steps.version.outputs.VERSION }} is stable — skipping pre-release publish."
+          echo "::notice::Version ${{ needs.build-and-test.outputs.version }} is stable — skipping pre-release publish."
           echo "Stable versions are published via publish-release.yml when you push a tag."
           echo "SKIP_PUBLISH=true" >> "$GITHUB_ENV"
 
-      - name: Pack
+      - name: Download packages
         if: ${{ env.SKIP_PUBLISH != 'true' }}
-        run: |
-          for proj in src/*/*.csproj; do
-            dotnet pack "$proj" --no-build -c Release -o ./nupkgs
-          done
-
-      - name: Upload packages as artifact
-        if: ${{ env.SKIP_PUBLISH != 'true' }}
-        uses: actions/upload-artifact@v7.0.0
+        uses: actions/download-artifact@v8.0.1
         with:
-          name: nupkgs-prerelease-${{ steps.version.outputs.VERSION }}
-          path: ./nupkgs/
-          if-no-files-found: error
-          retention-days: 3
+          name: nupkgs
+          path: ./nupkgs
+
+      - name: Setup .NET
+        if: ${{ env.SKIP_PUBLISH != 'true' }}
+        uses: actions/setup-dotnet@v5.2.0
+        with:
+          dotnet-version: '10.x'
 
       - name: Push to GitHub Packages
         if: ${{ env.SKIP_PUBLISH != 'true' }}
@@ -98,5 +70,5 @@ jobs:
         run: |
           echo "### 📦 Pre-release published" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "**Version:** \`${{ steps.version.outputs.VERSION }}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Version:** \`${{ needs.build-and-test.outputs.version }}\`" >> "$GITHUB_STEP_SUMMARY"
           echo "**Registry:** [GitHub Packages](https://github.com/renzojared/DotEmilu/packages)" >> "$GITHUB_STEP_SUMMARY"
