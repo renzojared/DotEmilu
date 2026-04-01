@@ -196,7 +196,8 @@ git push --tags
 #   - Build + Test + Pack
 #   - Validates that MinVer calculates 10.0.0 (must match the tag)
 #   - Publishes .nupkg and .snupkg to NuGet.org
-#   - Creates GitHub Release with notes and artifacts
+#   - Calculates stable changelog base (skips pre-releases)
+#   - Creates immutable GitHub Release with notes and artifacts
 ```
 
 ### Scenario 3: Publish a beta/RC version by tag
@@ -214,6 +215,7 @@ git push --tags
 # → Publish Release triggers:
 #   - MinVer calculates 10.0.0-beta.1
 #   - Publishes to GitHub Packages (not NuGet.org)
+#   - Computes changelog incrementally from previous RC
 #   - Creates GitHub Release marked as pre-release
 ```
 
