@@ -13,7 +13,6 @@ concurrency:
 
 env:
   DOTNET_NOLOGO: true
-  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
 
 permissions: {}   # deny all by default; each job grants only what it needs
@@ -120,8 +119,9 @@ jobs:
     runs-on: ubuntu-latest
 
     # Ties this job to the GitHub Environment configured on NuGet.org as a
-    # trusted publisher. No NUGET_API_KEY secret needed — authentication is
-    # done via a short-lived OIDC token scoped to this exact workflow run.
+    # trusted publisher. Authentication uses a short-lived OIDC token scoped
+    # to this exact workflow run (via NuGet/login@v1).
+    # Required secret: NUGET_USER (your NuGet.org profile name).
     environment: nuget-org
 
     permissions:
@@ -139,49 +139,24 @@ jobs:
         with:
           dotnet-version: '10.x'
 
-      - name: Get NuGet token (Trusted Publishing)
-        id: nuget-token
-        # How this works:
-        # 1. GitHub issues a short-lived OIDC JWT unique to this workflow run.
-        # 2. NuGet.org verifies the JWT against the trusted publisher config
-        #    (owner=renzojared, repo=DotEmilu, workflow=publish-release.yml,
-        #     environment=nuget-org) that you set up in your NuGet account.
-        # 3. NuGet returns a scoped, single-use API key valid only for this run.
-        # 4. The key is masked so it never appears in logs.
-        #
-        # Setup on NuGet.org (one-time):
-        #   Account → API Keys → Add new key → Type: Trusted Publisher
-        #   → GitHub Actions → owner: renzojared, repo: DotEmilu,
-        #     workflow: publish-release.yml, environment: nuget-org
-        run: |
-          OIDC_TOKEN=$(curl -sS \
-            -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=api://AzureADTokenExchange" \
-            | jq -r '.value')
-
-          echo "::add-mask::$OIDC_TOKEN"
-
-          API_KEY=$(curl -sS -X POST \
-            "https://www.nuget.org/api/v2/publish/trustedpublisher/oidc" \
-            -H "Content-Type: application/json" \
-            -d "{\"oidcToken\": \"$OIDC_TOKEN\"}" \
-            | jq -r '.apiKey')
-
-          echo "::add-mask::$API_KEY"
-          echo "NUGET_API_KEY=$API_KEY" >> "$GITHUB_ENV"
+      - name: NuGet login (Trusted Publishing)
+        uses: NuGet/login@v1
+        id: nuget-login
+        with:
+          user: ${{ secrets.NUGET_USER }}
 
       - name: Push .nupkg to NuGet.org
         run: |
           dotnet nuget push "./nupkgs/*.nupkg" \
             --source "https://api.nuget.org/v3/index.json" \
-            --api-key "$NUGET_API_KEY" \
+            --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}" \
             --skip-duplicate
 
       - name: Push .snupkg to NuGet.org
         run: |
           dotnet nuget push "./nupkgs/*.snupkg" \
             --source "https://api.nuget.org/v3/index.json" \
-            --api-key "$NUGET_API_KEY" \
+            --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}" \
             --skip-duplicate
 
   # ──────────────────────────────────────────────
@@ -211,7 +186,7 @@ jobs:
       - name: Push to GitHub Packages
         run: |
           dotnet nuget push "./nupkgs/*.nupkg" \
-            --source "https://nuget.pkg.github.com/renzojared/index.json" \
+            --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
             --api-key ${{ secrets.GITHUB_TOKEN }} \
             --skip-duplicate
 
@@ -246,9 +221,9 @@ jobs:
         run: |
           VERSION="${{ needs.build.outputs.version }}"
           if echo "$VERSION" | grep -q '-'; then
-            PACKAGE_REGISTRY_TEXT="📦 [GitHub Packages](https://github.com/renzojared/DotEmilu/packages)"
+            PACKAGE_REGISTRY_TEXT="📦 [GitHub Packages](https://github.com/${{ github.repository }}/packages)"
           else
-            PACKAGE_REGISTRY_TEXT="📦 [NuGet.org packages](https://www.nuget.org/profiles/renzojared)"
+            PACKAGE_REGISTRY_TEXT="📦 [NuGet.org packages](https://www.nuget.org/profiles/${{ secrets.NUGET_USER }})"
           fi
 
           {

@@ -1,20 +1,17 @@
 # CI/CD & Release Workflow
 
-Complete guide on how the DotEmilu CI/CD pipeline works, how MinVer
-calculates versions, and what you as a developer need to do for each type of
-release.
+How the DotEmilu CI/CD pipeline works, how MinVer calculates versions, and what
+to do for each type of release.
 
 ---
 
 ## Table of contents
 
 - [Workflow architecture](#workflow-architecture)
-- [How MinVer works (your versioning system)](#how-minver-works-your-versioning-system)
+- [How MinVer works](#how-minver-works)
 - [Distribution strategy](#distribution-strategy)
-- [What you need to do: step-by-step scenarios](#what-you-need-to-do-step-by-step-scenarios)
-- [How overwriting already-published versions is prevented](#how-overwriting-already-published-versions-is-prevented)
-- [Community files (.github)](#community-files-github)
-- [Dependabot](#dependabot)
+- [Release scenarios](#release-scenarios)
+- [Version overwrite protection](#version-overwrite-protection)
 - [Required setup](#required-setup)
 - [FAQ](#faq)
 
@@ -58,7 +55,7 @@ package binary.
 
 ---
 
-## How MinVer works (your versioning system)
+## How MinVer works
 
 ### Fundamental rule
 
@@ -152,7 +149,7 @@ and are never packaged.
 
 ---
 
-## What you need to do: step-by-step scenarios
+## Release scenarios
 
 ### Scenario 1: Normal development (day to day)
 
@@ -267,9 +264,9 @@ git push
 
 ---
 
-## How overwriting already-published versions is prevented
+## Version overwrite protection
 
-Four layers of protection:
+Six layers of protection:
 
 ### 1. MinVer + height = automatically unique versions
 
@@ -318,8 +315,8 @@ Additional safeguards in the release step:
 
 - **`fail_on_unmatched_files: true`** — the workflow fails if the `.nupkg` glob
   matches no files, preventing an empty release
-- **`make_latest`** — only stable releases are marked as "Latest"; pre-releases
-  are explicitly set to `false`
+- **`prerelease`** — set from the version; GitHub automatically avoids marking
+  pre-releases as "Latest"
 - **`--verify-tag`** — `gh release edit` aborts if the tag does not exist in the
   remote, as an extra safety check
 
@@ -327,30 +324,35 @@ Additional safeguards in the release step:
 
 ## Required setup
 
-### NuGet.org — Trusted Publishing (no stored secret needed)
+### NuGet.org — Trusted Publishing
 
-The release workflow authenticates to NuGet.org via **OIDC Trusted Publishing**.
-GitHub issues a short-lived token unique to each workflow run; NuGet.org verifies
-it against a trusted publisher configuration you define once. No `NUGET_API_KEY`
-secret needs to be stored in the repository.
+The release workflow authenticates to NuGet.org via **OIDC Trusted Publishing**
+using the official [`NuGet/login@v1`](https://github.com/NuGet/login) action.
+GitHub issues a short-lived OIDC token unique to each workflow run; the action
+exchanges it for a temporary NuGet API key.
 
 **One-time setup on NuGet.org:**
 
-1. Go to https://www.nuget.org/account/apikeys
-2. Click **Add new key** → Type: **Trusted Publisher** → **GitHub Actions**
+1. Go to https://www.nuget.org → Sign in → Click your username → **Trusted Publishing**
+2. Click **Add new trusted publishing policy**
 3. Fill in:
-   - Owner: `renzojared`
-   - Repository: `DotEmilu`
-   - Workflow: `publish-release.yml`
+   - Repository Owner: your GitHub username
+   - Repository: your repository name
+   - Workflow: `publish-release.yml` (file name only, without `.github/workflows/`)
    - Environment: `nuget-org`
-4. Save the key (it is not stored anywhere — NuGet uses the OIDC config, not this
-   value)
+4. Save the policy
+
+> If the policy shows "Pending full activation", that is normal for the first
+> 7 days. It becomes permanently active after the first successful publish.
 
 **One-time setup on GitHub:**
 
 1. Go to your repo → **Settings** → **Environments**
 2. Create an environment named exactly **`nuget-org`**
 3. Optionally add protection rules (e.g., require a reviewer before publishing)
+4. Go to **Settings** → **Secrets and variables** → **Actions**
+5. Create a repository secret named **`NUGET_USER`** with your NuGet.org **profile
+   name** (not your email)
 
 ### GitHub Packages
 
@@ -379,104 +381,15 @@ use it automatically.
 Coverage thresholds are configured in [`codecov.yml`](../codecov.yml) (project
 target, patch target, and flag settings). No repository variables are needed.
 
----
+### Quick reference: all settings
 
-## Community files (.github)
-
-GitHub recognizes certain files as "community health files" and displays them in
-the repo UI (Insights → Community tab). Projects adopted by the community
-(Serilog, MediatR, Polly, ASP.NET Core, etc.) include them as standard.
-
-| File | Purpose |
-|---|---|
-| `.github/ISSUE_TEMPLATE/bug_report.yml` | Structured form for reporting bugs |
-| `.github/ISSUE_TEMPLATE/feature_request.yml` | Form for suggesting features |
-| `.github/ISSUE_TEMPLATE/config.yml` | Disables blank issues, adds link to Discussions |
-| `.github/PULL_REQUEST_TEMPLATE.md` | Checklist that appears when opening a PR |
-| `.github/SECURITY.md` | Vulnerability reporting policy |
-| `.github/FUNDING.yml` | "Sponsor" button on GitHub |
-| `.github/dependabot.yml` | Automatic dependency updates |
-| `.github/RELEASE.md` | This guide |
-| `CONTRIBUTING.md` | Contributor guide (build, test, style, conventions) |
-| `CODE_OF_CONDUCT.md` | Code of conduct (Contributor Covenant 2.1) |
-
-### About FUNDING.yml
-
-`FUNDING.yml` activates the **"Sponsor"** button on your GitHub repo. Its current
-content:
-
-```yaml
-github: [renzojared]
-```
-
-This enables GitHub Sponsors for your profile. If you have not configured GitHub
-Sponsors yet, the button will not do anything visible. To activate it:
-
-1. Go to https://github.com/sponsors/renzojared
-2. Follow the onboarding process
-
-If you want to add other donation platforms, you can add more keys:
-
-```yaml
-github: [renzojared]
-# ko_fi: your_username
-# buy_me_a_coffee: your_username
-# custom: ["https://your-site.com/donate"]
-```
-
-It is not mandatory. Many projects only have `github:`.
-
----
-
-## Dependabot
-
-### What is it?
-
-Dependabot is a bot built into GitHub that scans your dependencies and opens
-automatic PRs when updates are available. It does not touch your code — it only
-updates versions in configuration files.
-
-### What does it do in your repo?
-
-Your `dependabot.yml` has two ecosystems configured:
-
-#### 1. `github-actions`
-
-Every Monday it checks whether the actions used in your workflows have new
-versions:
-
-```yaml
-# If actions/checkout@v6.0.2 has a v6.0.3, it opens a PR
-- package-ecosystem: "github-actions"
-  schedule:
-    interval: "weekly"
-    day: "monday"
-```
-
-This is important because GitHub Actions are pinned to specific versions for
-security. Without Dependabot, you would stay on old versions indefinitely.
-
-#### 2. `nuget`
-
-Every Monday it checks your `PackageVersion` entries in `Directory.Packages.props`:
-
-```yaml
-- package-ecosystem: "nuget"
-  groups:
-    ef-core:       # Grouped PRs for Microsoft.EntityFrameworkCore*
-    aspnetcore:    # Grouped PRs for Microsoft.AspNetCore*
-    testing:       # Grouped PRs for xunit*, coverlet*, NSubstitute*, Microsoft.NET.Test.Sdk
-```
-
-The **groups** reduce noise: instead of 5 separate PRs for each EF Core package,
-it opens 1 single PR that updates them all together.
-
-### What do you do?
-
-1. Dependabot opens a PR
-2. CI runs automatically (build + test)
-3. If it passes, review and merge
-4. If it fails, check whether it is a breaking change and decide
+| Setting | Type | Where to configure | Value / Source | Required |
+|---|---|---|---|---|
+| `nuget-org` | Environment | Repo → Settings → Environments | Create with exact name `nuget-org` | **Yes** |
+| `NUGET_USER` | Secret | Repo → Settings → Secrets → Actions | Your NuGet.org profile name | **Yes** |
+| `CODECOV_TOKEN` | Secret | Repo → Settings → Secrets → Actions | From https://app.codecov.io → repo → Settings → Upload Token | Optional (public repos) |
+| `GITHUB_TOKEN` | Secret | Automatic (GitHub provides it) | — | Automatic |
+| Trusted Publishing policy | NuGet.org config | NuGet.org → Account → Trusted Publishing | See [NuGet.org setup](#nugetorg--trusted-publishing) above | **Yes** |
 
 ---
 
