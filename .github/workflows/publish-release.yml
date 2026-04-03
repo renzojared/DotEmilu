@@ -275,7 +275,7 @@ jobs:
           echo "PREVIOUS_TAG=$PREVIOUS_TAG" >> "$GITHUB_OUTPUT"
           echo "Determined previous stable tag: $PREVIOUS_TAG"
 
-      - name: Create GitHub Release
+      - name: Create GitHub Release (draft)
         uses: softprops/action-gh-release@v2.6.1
         with:
           tag_name: ${{ github.ref_name }}
@@ -285,9 +285,9 @@ jobs:
           prerelease: ${{ contains(needs.build.outputs.version, '-') }}
           body_path: release_body.md
           files: ./nupkgs/*.nupkg
+          fail_on_unmatched_files: true
 
       - name: Publish GitHub Release
-        uses: softprops/action-gh-release@v2.6.1
-        with:
-          tag_name: ${{ github.ref_name }}
-          prerelease: ${{ contains(needs.build.outputs.version, '-') }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release edit "${{ github.ref_name }}" --draft=false --verify-tag

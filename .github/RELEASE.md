@@ -41,7 +41,7 @@ release.
 | **Build & Test** | Called by CI and Publish Pre-release | Build + Test + Coverage (Codecov) + Pack + Upload artifact | Internal (reusable workflow) |
 | **CI** | PR to `main` (with code/test/build changes) | Dependency Review + Build & Test | None (validation only) |
 | **Publish Pre-release** | Push/merge to `main` (with package-impacting changes) | Build & Test + Push `.nupkg` | GitHub Packages |
-| **Publish Release** | Push of tag `v*` | Build + Test + Pack + Attest provenance + Push + GitHub Release | NuGet.org (stable) or GitHub Packages (pre-release) |
+| **Publish Release** | Push of tag `v*` | Build + Test + Pack + Attest provenance + Push + GitHub Release (draft → publish) | NuGet.org (stable) or GitHub Packages (pre-release) |
 
 `Build & Test` is a [reusable workflow](https://docs.github.com/en/actions/sharing-automations/reusing-workflows)
 that eliminates duplication. It builds, tests with coverage, packs all projects,
@@ -197,7 +197,9 @@ git push --tags
 #   - Validates that MinVer calculates 10.0.0 (must match the tag)
 #   - Publishes .nupkg and .snupkg to NuGet.org
 #   - Calculates stable changelog base (skips pre-releases)
-#   - Creates immutable GitHub Release with notes and artifacts
+#   - Creates GitHub Release as draft, uploads .nupkg assets,
+#     then publishes (required for immutable releases)
+#   - Stable releases are marked as "Latest"
 ```
 
 ### Scenario 3: Publish a beta/RC version by tag
@@ -215,8 +217,9 @@ git push --tags
 # → Publish Release triggers:
 #   - MinVer calculates 10.0.0-beta.1
 #   - Publishes to GitHub Packages (not NuGet.org)
-#   - Computes changelog incrementally from previous RC
-#   - Creates GitHub Release marked as pre-release
+#   - Creates GitHub Release as draft, uploads .nupkg assets,
+#     then publishes (required for immutable releases)
+#   - Marked as pre-release, NOT marked as "Latest"
 ```
 
 ### Scenario 4: Promote a beta to stable
@@ -300,6 +303,25 @@ In `publish-release.yml`, before packing, it is verified that the version MinVer
 computes matches exactly the version in the tag across all projects under `src/`.
 If they do not match, the workflow fails with a clear error. This prevents a tag
 placed on the wrong commit from publishing an unexpected version.
+
+### 6. Immutable releases + draft-then-publish
+
+The repository has [immutable releases](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository)
+enabled. Once a release is published, its assets cannot be modified. The workflow
+handles this by:
+
+1. Creating the release as a **draft** (`draft: true`) via `softprops/action-gh-release`
+2. Uploading all `.nupkg` assets while still in draft state
+3. Publishing the release with `gh release edit --draft=false --verify-tag`
+
+Additional safeguards in the release step:
+
+- **`fail_on_unmatched_files: true`** — the workflow fails if the `.nupkg` glob
+  matches no files, preventing an empty release
+- **`make_latest`** — only stable releases are marked as "Latest"; pre-releases
+  are explicitly set to `false`
+- **`--verify-tag`** — `gh release edit` aborts if the tag does not exist in the
+  remote, as an extra safety check
 
 ---
 
