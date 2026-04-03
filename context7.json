@@ -1,32 +1,4 @@
 {
-    "$schema": "https://context7.com/schema/context7.json",
-    "url": "https://context7.com/renzojared/dotemilu",
-    "public_key": "pk_TXHppQirIW4IcMnsQqZCn",
-    "projectTitle": "DotEmilu",
-    "description": "A .NET 10 library ecosystem for building use-case-driven applications. Provides handler pipelines with FluentValidation, chain-of-responsibility, ASP.NET Core Minimal API integration with Problem Details, and Entity Framework Core utilities including auditable entities, soft delete, CQRS patterns, and pagination.",
-    "folders": [],
-    "excludeFolders": [
-        "tests",
-        "assets",
-        ".github"
-    ],
-    "excludeFiles": [
-        "Directory.Build.props",
-        "Directory.Packages.props",
-        "global.json",
-        "nuget.config",
-        "DotEmilu.slnx"
-    ],
-    "rules": [
-        "DotEmilu targets .NET 10 and is distributed as four NuGet packages: DotEmilu.Abstractions, DotEmilu, DotEmilu.AspNetCore, and DotEmilu.EntityFrameworkCore",
-        "Package dependency chain: Abstractions (base) → DotEmilu (core) → AspNetCore; EntityFrameworkCore depends only on Abstractions",
-        "Handlers follow the pattern: Handler<TRequest> (no response) or Handler<TRequest, TResponse> (with response), always receiving an IVerifier<TRequest> for validation",
-        "ChainHandler<TChain> implements chain-of-responsibility via SetSuccessor() — used for multi-step pipelines like Validate → Enrich → Persist",
-        "Validation uses FluentValidation through IVerifier<TRequest>; manual errors can be added via verifier.AddValidationError()",
-        "For ASP.NET Core, HttpHandler wraps handlers into IResult producers; AsDelegate.ForAsync converts them to Minimal API delegates",
-        "IPresenter formats responses as RFC 7807 Problem Details; configured via ResultMessage in appsettings.json",
-        "Entity Framework Core: AuditableEntityInterceptor, SoftDeleteInterceptor, BaseEntityConfiguration, BaseAuditableEntityConfiguration with MappingStrategy (TPC/TPH/TPT); extensions UseIsDeleted(), AsPaginatedListAsync(), HasFormattedComment()",
-        "DI registration: AddDotEmilu() for ASP.NET Core, AddVerifier()/AddHandlers(assembly)/AddChainHandlers(assembly) for core, AddSoftDeleteInterceptor()/AddAuditableEntityInterceptors(assembly) for EF Core",
-        "Samples in /samples/ are runnable examples: ConsoleApp (8 handler scenarios), EntityFrameworkCore (7 EF patterns), FullApp (complete ASP.NET Core Web API), Domain (shared contracts and entities)"
-    ]
+  "url": "https://context7.com/renzojared/dotemilu",
+  "public_key": "pk_TXHppQirIW4IcMnsQqZCn"
 }
