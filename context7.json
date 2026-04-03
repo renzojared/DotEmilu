@@ -1,5 +1,7 @@
 {
     "$schema": "https://context7.com/schema/context7.json",
+    "url": "https://context7.com/renzojared/dotemilu",
+    "public_key": "pk_TXHppQirIW4IcMnsQqZCn"
     "projectTitle": "DotEmilu",
     "description": "A .NET 10 library ecosystem for building use-case-driven applications. Provides handler pipelines with FluentValidation, chain-of-responsibility, ASP.NET Core Minimal API integration with Problem Details, and Entity Framework Core utilities including auditable entities, soft delete, CQRS patterns, and pagination.",
     "folders": [],
