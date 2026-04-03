@@ -5,6 +5,7 @@ A .NET 10 library ecosystem for building **use-case-driven applications** with v
 [![NuGet](https://img.shields.io/nuget/v/DotEmilu.svg)](https://www.nuget.org/packages/DotEmilu)
 [![codecov](https://codecov.io/gh/renzojared/DotEmilu/graph/badge.svg?token=10VJ0H5X5S)](https://codecov.io/gh/renzojared/DotEmilu)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/renzojared/DotEmilu)
 
 ## Packages
 
