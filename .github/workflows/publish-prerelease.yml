@@ -61,7 +61,7 @@ jobs:
         if: ${{ env.SKIP_PUBLISH != 'true' }}
         run: |
           dotnet nuget push "./nupkgs/*.nupkg" \
-            --source "https://nuget.pkg.github.com/renzojared/index.json" \
+            --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
             --api-key ${{ secrets.GITHUB_TOKEN }} \
             --skip-duplicate
 
@@ -71,4 +71,4 @@ jobs:
           echo "### 📦 Pre-release published" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "**Version:** \`${{ needs.build-and-test.outputs.version }}\`" >> "$GITHUB_STEP_SUMMARY"
-          echo "**Registry:** [GitHub Packages](https://github.com/renzojared/DotEmilu/packages)" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Registry:** [GitHub Packages](https://github.com/${{ github.repository }}/packages)" >> "$GITHUB_STEP_SUMMARY"
