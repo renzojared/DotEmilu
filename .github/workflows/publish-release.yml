@@ -94,7 +94,7 @@ jobs:
           echo "All packages validated."
 
       - name: Upload packages
-        uses: actions/upload-artifact@v7.0.0
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: nupkgs
           path: ./nupkgs/
