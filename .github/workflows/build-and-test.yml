@@ -62,7 +62,7 @@ jobs:
             --coverlet-skip-auto-props
 
       - name: Upload unit test coverage
-        uses: codecov/codecov-action@v6.0.0
+        uses: codecov/codecov-action@v6.0.1
         with:
           directory: tests/DotEmilu.UnitTests/
           flags: unittests
@@ -71,7 +71,7 @@ jobs:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Upload integration test coverage
-        uses: codecov/codecov-action@v6.0.0
+        uses: codecov/codecov-action@v6.0.1
         with:
           directory: tests/DotEmilu.IntegrationTests/
           flags: integrationtests
