@@ -30,7 +30,7 @@ jobs:
           filter: tree:0   # treeless clone for better performance
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v5.2.0
+        uses: actions/setup-dotnet@v5.3.0
         with:
           dotnet-version: '10.x'
           cache: true                                    # Caches NuGet global-packages folder
