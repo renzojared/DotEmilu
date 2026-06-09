@@ -53,7 +53,7 @@ jobs:
 
       - name: Setup .NET
         if: ${{ env.SKIP_PUBLISH != 'true' }}
-        uses: actions/setup-dotnet@v5.2.0
+        uses: actions/setup-dotnet@v5.3.0
         with:
           dotnet-version: '10.x'
 
